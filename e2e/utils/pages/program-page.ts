@@ -18,7 +18,7 @@ export class ProgramsPage {
     await this.page.locator('#completionDateInput').fill('20/08/2024');
     await this.page.locator('#completionDateInput').press('Tab');
     await this.page.locator('#location').selectOption('Outpatient Clinic');
-    await this.page.getByRole('button', { name: /save and close/i }).click(), delay(3000);
+    await this.page.getByRole('button', { name: /save and close/i }).click(), delay(6000);
   }
 
   async updatePatientProgramEnrollment() {
@@ -28,8 +28,8 @@ export class ProgramsPage {
     await this.page.locator('#completionDateInput').clear();
     await this.page.locator('#completionDateInput').fill('21/09/2024');
     await this.page.locator('#completionDateInput').press('Tab');
-    await this.page.locator('#location').selectOption('Community Outreach');
+    await this.page.locator('#location').selectOption('Inpatient Ward');
     await this.page.getByRole('button', { name: /save and close/i }).click();
-    await expect(this.page.getByText(/program enrollment updated/i)).toBeVisible(), delay(5000);
+    await expect(this.page.getByText(/program enrollment updated/i)).toBeVisible(), delay(6000);
   }
 }

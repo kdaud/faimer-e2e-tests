@@ -21,7 +21,7 @@ export class BiometricsAndVitalsPage {
 
   async addPatientVitals() {
     await this.page.getByText(/record vital signs/i).click();
-    await this.page.getByRole('spinbutton', { name: /temperature/i }).fill('35.8');
+    await this.page.getByRole('spinbutton', { name: /temperature/i }).fill('88');
     await this.page.getByRole('spinbutton', { name: /systolic/i }).fill('125');
     await this.page.getByRole('spinbutton', { name: /diastolic/i }).fill('95');
     await this.page.getByRole('spinbutton', { name: /pulse/i }).fill('62');

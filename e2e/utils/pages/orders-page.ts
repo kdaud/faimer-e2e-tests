@@ -11,6 +11,7 @@ export class OrdersPage {
 
   async navigateToLabOrderForm() {
     await this.page.getByLabel('Order basket').click();
+    await expect(this.page.getByText(/Lab orders/)).toBeVisible();
     await expect(this.page.getByRole('button', { name: 'Add', exact: true }).nth(1)).toBeVisible();
     await this.page.getByRole('button', { name: 'Add', exact: true }).nth(1).click();
   }
@@ -24,9 +25,7 @@ export class OrdersPage {
   async modifyLabOrder() {
     await this.page.getByRole('button', { name: /options/i }).nth(0).click();
     await this.page.getByRole('menuitem', { name: /modify order/i }).click();
-    await this.page.getByLabel(/clear selected item/i).click();
-    await this.page.getByLabel('Open', { exact: true }).click();
-    await this.page.getByText('Stat', { exact: true }).click();
+    await this.page.getByLabel('Priority').selectOption('STAT');
     await this.page.getByLabel(/additional instructions/i).fill('Take urine sample');
   }
 

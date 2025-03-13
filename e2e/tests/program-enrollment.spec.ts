@@ -20,7 +20,7 @@ test.beforeEach(async ({ page }) => {
   await registrationPage.createPatient();
 });
 
-test('Add  a program enrollment', async ({ page }) => {
+test('Add a program enrollment', async ({ page }) => {
   // setup
   const headerRow = programsPage.programsTable().locator('thead > tr');
   const dataRow = programsPage.programsTable().locator('tbody > tr');
@@ -30,6 +30,8 @@ test('Add  a program enrollment', async ({ page }) => {
   await programsPage.addPatientProgramEnrollment();
 
   // verify
+  await homePage.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
+  await programsPage.navigateToProgramsPage();
   await expect(headerRow).toContainText(/active programs/i);
   await expect(headerRow).toContainText(/location/i);
   await expect(headerRow).toContainText(/date enrolled/i);
@@ -44,6 +46,8 @@ test('Edit a program enrollment', async ({ page }) => {
   const dataRow = programsPage.programsTable().locator('tbody > tr');
   await programsPage.navigateToProgramsPage();
   await programsPage.addPatientProgramEnrollment();
+  await homePage.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
+  await programsPage.navigateToProgramsPage();
   await expect(headerRow).toContainText(/active programs/i);
   await expect(headerRow).toContainText(/location/i);
   await expect(headerRow).toContainText(/date enrolled/i);
@@ -60,7 +64,7 @@ test('Edit a program enrollment', async ({ page }) => {
   await programsPage.navigateToProgramsPage();
   await expect(dataRow).toContainText(/hiv care and treatment/i);
   await expect(dataRow).not.toContainText(/outpatient clinic/i);
-  await expect(dataRow).toContainText(/community outreach/i);
+  await expect(dataRow).toContainText(/inpatient ward/i);
 });
 
 test.afterEach(async ({}) => {

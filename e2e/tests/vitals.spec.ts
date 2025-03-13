@@ -36,7 +36,7 @@ test('Record vitals', async ({}) => {
   await expect(headerRow).toContainText(/pulse/i);
   await expect(headerRow).toContainText(/r. rate/i);
   await expect(headerRow).toContainText(/SPO2/i);
-  await expect(dataRow).toContainText('35.8');
+  await expect(dataRow).toContainText('88');
   await expect(dataRow).toContainText('125 / 95');
   await expect(dataRow).toContainText('62');
   await expect(dataRow).toContainText('18');

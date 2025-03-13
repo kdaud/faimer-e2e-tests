@@ -15,6 +15,8 @@ export class VisitsPage {
     homePage = new HomePage(this.page);
     await homePage.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
     await this.page.getByRole('button', { name: /start a visit/i }).click();
+    await this.page.getByTestId('combo').getByRole('button', { name: 'Open' }).click();
+    await this.page.getByTestId('combo').getByText(/inpatient ward/i).click();
     await this.page.locator('label').filter({ hasText: 'Facility Visit' }).locator('span').first().click();
     await this.page.locator('form').getByRole('button', { name: /start visit/i }).click();
     await expect(this.page.getByText(/facility visit started successfully/i)).toBeVisible(), delay(3000);
