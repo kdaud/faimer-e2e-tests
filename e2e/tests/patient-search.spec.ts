@@ -18,7 +18,7 @@ test('Search patient by given name', async ({ page }) => {
   await registrationPage.createPatient();
 
   // replay
-  await homePage.goToHomePage();
+  await homePage.navigateToHomePage();
   await homePage.patientSearchIcon().click();
   await homePage.patientSearchBar().fill(`${patientName.givenName}`), delay(2000);
 
@@ -36,7 +36,7 @@ test('Search patient by full name', async ({ page }) => {
   await registrationPage.createPatient();
 
   // replay
-  await homePage.goToHomePage();
+  await homePage.navigateToHomePage();
   await homePage.patientSearchIcon().click();
   await homePage.patientSearchBar().fill(`${patientName.firstName} ${patientName.givenName}`), delay(2000);
 
@@ -56,7 +56,7 @@ test('Search patient by patient identifier', async ({ page }) => {
   const openmrsIdentifier = await page.textContent('#demographics section p:nth-child(2)');
 
   // replay
-  await homePage.goToHomePage();
+  await homePage.navigateToHomePage();
   await homePage.patientSearchIcon().click();
   await homePage.patientSearchBar().fill(`${openmrsIdentifier}`), delay(2000);
 
@@ -75,7 +75,7 @@ test('Search patient by postal code', async ({ page }) => {
   await registrationPage.createPatient();
 
   // replay
-  await homePage.goToHomePage();
+  await homePage.navigateToHomePage();
   await homePage.patientSearchIcon().click();
   await homePage.patientSearchBar().fill('e2e_test'), delay(3000);
   await homePage.patientAdvancedSearch().click(), delay(2000);
@@ -96,7 +96,7 @@ test('Search patient by phone number', async ({ page }) => {
   await registrationPage.createPatient();
 
   // replay
-  await homePage.goToHomePage();
+  await homePage.navigateToHomePage();
   await homePage.patientSearchIcon().click();
   await homePage.patientSearchBar().fill('e2e_test'), delay(3000);
   await homePage.patientAdvancedSearch().click(), delay(2000);

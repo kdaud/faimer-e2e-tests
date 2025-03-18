@@ -39,7 +39,8 @@ jobs:
 
       - name: Run E2E tests
         env:
-          TEST_ENVIRONMENT: '${{ github.event.inputs.environment }}'
+          KEYCLOAK_USERNAME: '${{ secrets.KEYCLOAK_USERNAME }}'
+          KEYCLOAK_PASSWORD: '${{ secrets.KEYCLOAK_PASSWORD }}'
         run: npm run faimer-e2e
 
       - name: Upload report

@@ -40,7 +40,7 @@ test('Register an unknown patient', async ({ page }) => {
   await registrationPage.createPatientButton().click(), delay(4000);
 
   // verify
-  await homePage.goToHomePage();
+  await homePage.navigateToHomePage();
   await homePage.patientSearchIcon().click();
   await homePage.patientSearchBar().fill('Unknown Unknown');
   await page.getByRole('link', { name: `Unknown Unknown` }).first().click();
