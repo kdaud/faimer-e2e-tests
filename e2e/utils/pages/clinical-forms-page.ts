@@ -35,16 +35,26 @@ export class ClinicalFormsPage {
   readonly formsTable = () => this.page.getByRole('table', { name: /forms/i });
 
   async navigateToClinicalForms() {
-    await this.page.getByLabel(/clinical forms/i, { exact: true }).click();
+    await this.page.getByRole('button', { name: /clinical forms/i }).click();
     await expect(this.page.getByRole('cell', { name: /discharge instructions/i, exact: true })).toBeVisible();
     await expect(this.page.getByRole('cell', { name: /discharge summary/i, exact: true })).toBeVisible();
     await expect(this.page.getByRole('cell', { name: /procedure note/i, exact: true })).toBeVisible();
+    await expect(this.page.getByRole('cell', { name: /visit note/i, exact: true })).toBeVisible();
+    await expect(this.page.getByRole('cell', { name: /surgical operation/i, exact: true })).toBeVisible();
+    await expect(this.page.getByRole('cell', { name: /soap note template/i, exact: true })).toBeVisible();
+    await expect(this.page.getByRole('cell', { name: /ward admission/i, exact: true })).toBeVisible();
+    await expect(this.page.getByRole('cell', { name: /laboratory test results/i, exact: true })).toBeVisible();
     await expect(this.page.getByRole('cell', { name: /visit note/i, exact: true })).toBeVisible();
   }
 
   async navigateToVisitNoteForm() {
     await this.page.getByText(/Visit Note/).click();
     await expect(this.page.getByText(/Visit Note/)).toBeVisible();
+  }
+
+  async navigateToSurgicalOperationForm() {
+    await this.page.getByText(/surgical operation/i).click();
+    await expect(this.page.getByText(/surgical operation/i).first()).toBeVisible();
   }
 
   async navigateToDischargeInstructionsForm() {
@@ -148,6 +158,19 @@ export class ClinicalFormsPage {
     await this.page.locator('#dischargeSummaryDischargeMedication').fill(updatedDischargeMedications);
     await this.page.locator('#dischargeSummaryDischargeInstructions').fill(updatedDischargeInstructions);
     await this.page.getByRole('button', { name: /save/i }).click(), delay(2000);
+  }
+
+  async fillSurgicalOperationForm() {
+    await this.page.getByRole('textbox', { name: /pre-operative diagnosis/i }).fill('Acute appendicitis');
+    await this.page.getByRole('textbox', { name: /post-operative diagnosis/i }).fill('Acute suppurative Appendicitis');
+    await this.page.getByRole('textbox', { name: /procedure/i }).fill('Laparoscopic appendectomy');
+    await this.page.getByRole('textbox', { name: /assistants/i }).fill('Nurse Alex Johnson');
+    await this.page.locator('label').filter({ hasText: /general/i }).locator('span').first().click();
+    await this.page.getByRole('spinbutton', { name: /estimated blood loss/i }).fill('2');
+    await this.page.getByRole('textbox', { name: /complications/i }).fill('None');
+    await this.page.getByRole('textbox', { name: /specimens/i }).fill('Appendix sent for histopathological examination');
+    await this.page.getByRole('textbox', { name: /surgeon/i }).fill('Dr. Jane Smith');
+    await this.page.getByRole('textbox', { name: /post-operative instructions/i }).fill('Pain management with paracetamol and morphine as needed');
   }
 
   async saveForm() {
