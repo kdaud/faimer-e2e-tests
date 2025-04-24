@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 import { HomePage } from '../utils/pages/home-page';
 import { VisitsPage } from '../utils/pages/visits-page';
 import { patientName, RegistrationPage } from '../utils/pages/registration-page';
-import { ProgramsPage } from '../utils/pages/program-page';
+import { ProgramsPage } from '../utils/pages/programs-page';
 
 let homePage: HomePage;
 let visitsPage: VisitsPage;

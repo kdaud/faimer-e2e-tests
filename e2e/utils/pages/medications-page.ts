@@ -1,4 +1,5 @@
 import { expect, type Page } from '@playwright/test';
+import { delay } from './home-page';
 
 export class MedicationsPage {
   constructor(readonly page: Page) {}
@@ -30,7 +31,7 @@ export class MedicationsPage {
   }
 
   async saveDrugOrder() {
-    await this.page.getByRole('button', { name: /save order/i }).click();
+    await this.page.getByRole('button', { name: /save order/i }).click(), delay(3000);
     await this.page.getByRole('button', { name: /sign and close/i }).focus();
     await this.page.getByRole('button', { name: /sign and close/i }).click();
   }
@@ -41,14 +42,20 @@ export class MedicationsPage {
     await this.page.getByPlaceholder('Frequency').click();
     await this.page.getByText('Thrice daily').click();
     await this.page.getByLabel('Duration', { exact: true }).fill('6');
-    await this.page.getByLabel(/quantity to dispense/i).fill('8');
+    await this.page.getByLabel(/quantity to dispense/i).fill('8'), delay(6000);
+    await this.page.getByRole('button', { name: /save order/i }).focus();
     await this.page.getByRole('button', { name: /save order/i }).dispatchEvent('click');
+    await expect(this.page.getByText(/sign and close/i)).toBeVisible();
+    await this.page.getByRole('button', { name: /sign and close/i }).focus();
     await this.page.getByRole('button', { name: /sign and close/i }).dispatchEvent('click');
   }
 
   async discontinueDrugOrder() {
-    await this.page.getByRole('button', { name: /options/i, exact: true }).click();
-    await this.page.getByRole('menuitem', { name: /discontinue/i }).click();
+    await this.page.getByRole('button', { name: /options/i, exact: true }).click(), delay(4000);
+    await this.page.getByRole('menuitem', { name: /discontinue/i }).click(), delay(10000);
+    await expect(this.page.getByText(/discontinue/i)).toBeVisible();
+    await expect(this.page.getByText(/sign and close/i)).toBeVisible();
+    await this.page.getByRole('button', { name: /sign and close/i }).focus();
     await this.page.getByRole('button', { name: /sign and close/i }).dispatchEvent('click');
   }
 }

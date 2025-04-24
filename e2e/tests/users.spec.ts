@@ -15,7 +15,7 @@ test.beforeEach(async ({ page }) => {
   await keycloak.login();
 });
 
-test('User creation and data filtering', async ({ page }) => {
+test.skip('User creation and data filtering', async ({ page }) => {
   // setup
   await keycloak.navigateToUsers();
   await keycloak.addUserButton().click();

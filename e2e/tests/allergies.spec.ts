@@ -34,7 +34,7 @@ test('Add an allergy', async ({}) => {
   await expect(headerRow).toContainText(/allergen/i);
   await expect(headerRow).toContainText(/severity/i);
   await expect(headerRow).toContainText(/reaction/i);
-  await expect(headerRow).toContainText(/onset date and comments/i);
+  await expect(headerRow).toContainText(/comments/i);
   await expect(dataRow).toContainText(/dairy food/i);
   await expect(dataRow).toContainText(/moderate/i);
   await expect(dataRow).toContainText(/diarrhea/i);

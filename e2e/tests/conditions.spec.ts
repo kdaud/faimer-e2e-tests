@@ -31,7 +31,7 @@ test('Add a condition', async ({}) => {
 
   // verify
   await expect(dataRow).toContainText(/typhoid fever/i);
-  await expect(dataRow).toContainText(/jul 2023/i);
+  await expect(dataRow).toContainText(/27 — jul — 2023/i);
   await expect(dataRow).toContainText(/active/i);
 });
 
@@ -42,7 +42,7 @@ test('Edit a condition', async ({page}) => {
   await conditionsPage.navigateToConditionsPage();
   await conditionsPage.addPatientCondition();
   await expect(dataRow).toContainText(/typhoid fever/i);
-  await expect(dataRow).toContainText(/jul 2023/i);
+  await expect(dataRow).toContainText(/27 — jul — 2023/i);
   await expect(dataRow).toContainText(/active/i);
 
   // replay
@@ -52,8 +52,8 @@ test('Edit a condition', async ({page}) => {
   await page.getByRole('combobox', { name: /show/i }).click();
   await page.getByText('All', {exact: true}).click();
   await expect(dataRow).toContainText(/typhoid fever/i);
-  await expect(dataRow).not.toContainText(/jul 2023/i);
-  await expect(dataRow).toContainText(/aug 2023/i);
+  await expect(dataRow).not.toContainText(/27 — jul — 2023/i);
+  await expect(dataRow).toContainText(/11 — aug — 2023/i);
   await expect(dataRow).toContainText(/inactive/i);
 });
 

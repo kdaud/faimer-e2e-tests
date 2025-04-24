@@ -20,6 +20,7 @@ export class HomePage {
 
   async login() {
     await this.page.goto(`${process.env.O3_URL_DEV}`);
+    await expect(this.page.locator('#username')).toBeVisible();
     await this.page.locator('#username').fill(`${process.env.O3_USERNAME}`);
     await this.enterLoginCredentials();
   }

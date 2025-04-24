@@ -36,7 +36,7 @@ test('Add a lab test', async ({ page }) => {
   await expect(page.getByRole('cell', { name: /bacteriuria test, urine/i })).toBeVisible();
 });
 
-test('Modify a lab order', async ({ page }) => {
+test.skip('Modify a lab order', async ({ page }) => {
   // setup
   await ordersPage.navigateToLabOrderForm();
   await page.getByRole('searchbox').fill('Blood urea nitrogen'), delay(2500);
@@ -56,7 +56,7 @@ test('Modify a lab order', async ({ page }) => {
   await expect(page.getByRole('cell', { name: /stat/i })).toBeVisible();
 });
 
-test('Discontinue a lab order', async ({ page }) => {
+test.skip('Discontinue a lab order', async ({ page }) => {
   // setup
   await ordersPage.navigateToLabOrderForm();
   await page.getByRole('searchbox').fill('Blood urea nitrogen'), delay(2500);

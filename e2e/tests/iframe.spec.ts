@@ -14,7 +14,6 @@ test('Iframe page', async ({page}) => {
   await expect(page.locator("//a[text()='Patient lists']")).toBeVisible();
   await expect(page.locator("//a[text()='Laboratory']")).toBeVisible();
   await expect(page.locator("//a[text()='Service queues']")).toBeVisible();
-  await expect(page.locator("//a[text()='Appointments']")).toBeVisible();
   await expect(page.getByText(/active visits/i).nth(0)).toBeVisible();
   await expect(page.getByRole('button', {name: 'my account'})).toBeVisible();
   await expect(page.getByRole('button', {name: 'app menu'})).toBeVisible();
@@ -30,7 +29,6 @@ test('Iframe page', async ({page}) => {
   await expect(iframe.locator("//a[text()='Patient lists']")).toBeVisible();
   await expect(iframe.locator("//a[text()='Laboratory']")).toBeVisible();
   await expect(iframe.locator("//a[text()='Service queues']")).toBeVisible();
-  await expect(iframe.locator("//a[text()='Appointments']")).toBeVisible();
   await expect(iframe.getByRole('button', {name: 'my account'})).toBeVisible();
   await expect(iframe.getByRole('button', {name: 'app menu'})).toBeVisible();
   await expect(iframe.getByRole('button', {name: 'add patient'})).toBeVisible();

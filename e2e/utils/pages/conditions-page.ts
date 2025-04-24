@@ -13,8 +13,9 @@ export class ConditionsPage {
     await this.page.getByText(/record conditions/i).click();
     await this.page.getByPlaceholder(/search conditions/i).fill('Typhoid fever');
     await this.page.getByRole('menuitem', { name: 'Typhoid fever' }).click();
-    await this.page.getByLabel('Onset date').fill('27/07/2023');
-    await this.page.getByLabel('Onset date').press('Enter');
+    await this.page.getByRole('spinbutton', { name: /month, onset date/i }).fill('07');
+    await this.page.getByRole('spinbutton', { name: /day, Onset date/i  }).fill('27');
+    await this.page.getByRole('spinbutton', { name: /year, Onset date/i }).fill('2023');
     await this.page.locator('label').filter({ hasText: /^Active$/ }).locator('span').first().click();
     await this.page.getByRole('button', { name: /save & close/i }).click();
     await expect(this.page.getByText(/condition saved successfully/i)).toBeVisible();
@@ -24,9 +25,12 @@ export class ConditionsPage {
     await this.page.getByRole('button', { name: /options/i }).click();
     await this.page.getByRole('menuitem', { name: /edit/i }).click();
     await this.page.locator('label').filter({ hasText: 'Inactive' }).click();
-    await this.page.getByLabel(/onset date/i).clear();
-    await this.page.getByLabel(/onset date/i).fill('11/08/2023');
-    await this.page.getByLabel(/onset date/i).press('Tab');
+    await this.page.getByRole('spinbutton', { name: /month, onset date/i }).clear();
+    await this.page.getByRole('spinbutton', { name: /month, onset date/i }).fill('08');
+    await this.page.getByRole('spinbutton', { name: /day, Onset date/i  }).clear();
+    await this.page.getByRole('spinbutton', { name: /day, Onset date/i  }).fill('11');
+    await this.page.getByRole('spinbutton', { name: /year, Onset date/i }).clear();
+    await this.page.getByRole('spinbutton', { name: /year, Onset date/i }).fill('2023');
     await this.page.getByRole('button', { name: /save & close/i }).click();
     await expect(this.page.getByText(/condition updated/i)).toBeVisible();
   }
