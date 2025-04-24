@@ -13,20 +13,27 @@ export var secondUser = {
   email : '',
 }
 
+export var thirdUser = {
+  userName : '',
+  firstName : '',
+  email : '',
+}
 export class Keycloak {
   constructor(readonly page: Page) {}
 
   readonly addUserButton = () => this.page.getByTestId('add-user');
 
-  async login() {
-    await this.page.goto(`${process.env.KEYCLOAK_URL_DEV}/admin/master/console`);
+  async open() {
+    await this.page.goto(`${process.env.KEYCLOAK_URL_DEV}/realms/master/account`);
+    await this.page.getByRole('button', { name: /Sign in/ }).click();
     await this.page.getByLabel(/username or email/i).fill(`${process.env.KEYCLOAK_USERNAME}`);
     await this.page.getByLabel(/password/i).fill(`${process.env.KEYCLOAK_PASSWORD}`);
     await this.page.getByRole('button', { name: /sign in/i }).click();
-    await expect(this.page).toHaveURL(/.*console/), delay(6000);
+    await expect(this.page).toHaveURL(/.*account/), delay(6000);
   }
   
   async navigateToUsers() {
+    await this.page.goto(`${process.env.KEYCLOAK_URL_DEV}/admin/master/console`);
     await this.page.getByTestId('realmSelectorToggle').click();
     await expect(this.page.getByRole('menuitem', { name: 'ozone' })).toBeVisible();
     await this.page.getByRole('menuitem', { name: 'ozone' }).click();
@@ -59,6 +66,19 @@ export class Keycloak {
     await this.saveUser();
   }
 
+  async createThirdUser() {
+    thirdUser = {
+      userName : `${Array.from({ length: 5 }, () => String.fromCharCode(Math.floor(Math.random() * 26) + 97)).join('')}`,
+      firstName: `${Array.from({ length: 6 }, () => String.fromCharCode(Math.floor(Math.random() * 26) + 97)).join('')}`,
+      email: `${Array.from({ length: 6 }, () => String.fromCharCode(Math.floor(Math.random() * 26) + 97)).join('')}@gmail.com`
+    }
+    await this.page.locator('input[name="username"]').fill(`${thirdUser.userName}`);
+    await this.page.getByTestId('email-input').fill(`${thirdUser.email}`);
+    await this.page.locator('label').filter({ hasText: /yesno/i }).locator('span').first().click(), delay(1000);
+    await this.page.getByTestId('firstName-input').fill(`${thirdUser.firstName}`);
+    await this.saveUser();
+  }
+
   async saveUser() {
     await this.page.getByTestId('create-user').click();
     await expect(this.page.getByRole('heading', { name: /the user has been created/i })).toBeVisible(), delay(2000);
@@ -86,19 +106,23 @@ export class Keycloak {
   }
 
   async assignRoleToUser() {
-  await this.page.getByRole('textbox', { name: /search/i }).fill('openmrs');
+    await this.page.getByRole('textbox', { name: /search/i }).fill('FAIMER Learner');
   await this.page.getByRole('textbox', { name: /search/i }).press('Enter');
-  await this.page.getByRole('checkbox', { name: /select all rows/i }).check();
+  await this.page.getByRole('checkbox', { name: /select row/i }).check();
   await this.page.getByTestId('assign').click();
   await expect(this.page.getByText(/user role mapping successfully updated/i)).toBeVisible();
   }
 
-  async deleteUser() {
+  async deleteUsers() {
+    await this.open();
     await this.page.goto(`${process.env.KEYCLOAK_URL_DEV}/admin/master/console/#/ozone/users`);
     await this.page.getByRole('textbox', { name: 'search' }).fill(`${firstUser.userName}`);
     await this.page.getByRole('textbox', { name: 'search' }).press('Enter'), delay(1000);
     await this.confirmDelete();
     await this.page.getByRole('textbox', { name: 'search' }).fill(`${secondUser.userName}`);
+    await this.page.getByRole('textbox', { name: 'search' }).press('Enter'), delay(1000);
+    await this.confirmDelete();
+    await this.page.getByRole('textbox', { name: 'search' }).fill(`${thirdUser.userName}`);
     await this.page.getByRole('textbox', { name: 'search' }).press('Enter'), delay(1000);
     await this.confirmDelete();
   }
@@ -107,6 +131,6 @@ export class Keycloak {
     await this.page.getByRole('button', { name: /actions/i }).click();
     await this.page.getByRole('menuitem', { name: /delete/i }).click();
     await this.page.getByTestId('confirm').click();
-    await expect(this.page.getByText(/the user has been deleted/i)).toBeVisible();
+    await expect(this.page.getByText(/the user has been deleted/i).first()).toBeVisible();
   }
 }

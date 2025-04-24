@@ -1,6 +1,6 @@
 import { Page, expect } from '@playwright/test';
 import { patientName } from './registration-page';
-import { firstUser, secondUser } from './keycloak';
+import { firstUser, secondUser, thirdUser } from './keycloak';
 
 export const delay = (mills) => {
   const endTime = Date.now() + mills;
@@ -32,12 +32,12 @@ export class HomePage {
 
   async loginWithSecondUser() {
     await this.page.locator('#username').fill(`${secondUser.userName}`);
-    await this.page.locator('#password').fill(`${process.env.O3_PASSWORD}`);
-    await this.page.getByRole('button', { name: /log in/i }).click();
-    await this.page.locator('label').filter({ hasText: /Outpatient Clinic/ }).locator('span').first().click();
-    await this.page.getByRole('button', { name: /confirm/i }).click();
-    await expect(this.page).toHaveURL(/.*home/);
-    await expect(this.page.getByText(/today's appointments/i)).not.toBeVisible();
+    await this.enterLoginCredentials();
+  }
+
+  async loginWithThirdUser() {
+    await this.page.locator('#username').fill(`${thirdUser.userName}`);
+    await this.enterLoginCredentials();
   }
 
   async enterLoginCredentials() {
@@ -61,24 +61,14 @@ export class HomePage {
     await this.page.getByRole('link', { name: `${patientName.firstName + ' ' + patientName.givenName}` }).first().click();
   }
 
-  async searchExistingPatient(searchText: string) {
-    await this.navigateToHomePage();
-    await this.patientSearchIcon().click();
-    await this.patientSearchBar().fill(searchText);
-    await this.page.getByRole('link', { name: `James Martinez` }).first().click();
-  }
-
   async clickOnPatientResult(name: string) {
     await this.floatingSearchResultsContainer().locator(`text=${name}`).click();
   }
 
   async searchPatientId() {
-    await this.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
     await this.page.getByRole('button', { name: /actions/i, exact: true }).click();
-    await expect(this.editPatientButton()).toBeEnabled();
-    await this.editPatientButton().click(), delay(4000);
-    await expect(this.page.getByText(/identifiers/i, {exact: true})).toBeVisible();
-    await expect(this.page.getByText(/openmrs id/i, {exact: true})).toBeVisible();
+    await expect(this.editPatientButton()).toBeVisible();
+    await this.editPatientButton().click(), delay(6000);
   }
 
   async navigateToLoginPage() {

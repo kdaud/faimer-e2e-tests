@@ -42,7 +42,7 @@ test('Add a drug order', async ({ page }) => {
   await expect(dataRow).toContainText(/indication hypertension/i);
 });
 
-test.skip('Modify a drug order', async ({ page }) => {
+test('Modify a drug order', async ({ page }) => {
   // setup
   await visitsPage.startPatientVisit();
   await medicationsPage.navigateToDrugOrderForm();
@@ -70,7 +70,7 @@ test.skip('Modify a drug order', async ({ page }) => {
   await expect(dataRow.nth(0)).toContainText(/6 days/i);
 });
 
-test.skip('Discontinue a drug order', async ({ page }) => {
+test('Discontinue a drug order', async ({ page }) => {
   // setup
   await visitsPage.startPatientVisit();
   await medicationsPage.navigateToDrugOrderForm();
