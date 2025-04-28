@@ -1,15 +1,24 @@
 import { test, expect } from '@playwright/test';
-import { HomePage } from '../utils/pages/home-page';
+import { HomePage} from '../utils/pages/home-page';
+import { Keycloak } from '../utils/pages/keycloak';
 
 let homePage: HomePage;
+let keycloak: Keycloak;
 
 test.beforeEach(async ({ page }) => {
   homePage = new HomePage(page);
+  keycloak = new Keycloak(page);
+
+  await keycloak.open();
+  await keycloak.navigateToUsers();
+  await keycloak.addUserButton().click();
+  await keycloak.createUser();
 });
 
-test('Iframe page', async ({page}) => {
+test('Render server in an iframe after login, with all core features available', async ({page}) => {
   // setup
-  await homePage.login();
+  await homePage.navigateToLoginPage();
+  await homePage.loginWithUser();
   await expect(page.locator("//a[text()='Wards']")).toBeVisible();
   await expect(page.locator("//a[text()='Patient lists']")).toBeVisible();
   await expect(page.locator("//a[text()='Laboratory']")).toBeVisible();
@@ -33,4 +42,19 @@ test('Iframe page', async ({page}) => {
   await expect(iframe.getByRole('button', {name: 'app menu'})).toBeVisible();
   await expect(iframe.getByRole('button', {name: 'add patient'})).toBeVisible();
   await expect(iframe.getByRole('button', {name: 'search patient'})).toBeVisible();
+  await iframe.locator('[data-testid="searchPatientIcon"]').click();
+  await iframe.locator('[data-testid="patientSearchBar"]').fill('Leon Wagner');
+  await expect(iframe.getByText('1 search result')).toBeVisible();
+  await iframe.locator('[data-testid="floatingSearchResultsContainer"]').locator(`text=Leon Wagner`).click();
+  await expect(iframe.locator('header[aria-label="patient banner"]').getByText(`Leon Wagner`)).toBeVisible();
+  await expect(iframe.locator('header[aria-label="patient banner"]').getByText(/7 days/i)).toBeVisible();
+  await expect(iframe.locator('header[aria-label="patient banner"]').getByText(/male/i)).toBeVisible();
+});
+
+test.afterEach(async ({ browser }) => {
+  const context = await browser.newContext();
+  const page = await context.newPage();
+  const keycloak = new Keycloak(page);
+  await keycloak.deleteUser();
+  await context.close();
 });

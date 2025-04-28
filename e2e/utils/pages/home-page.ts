@@ -1,6 +1,5 @@
 import { Page, expect } from '@playwright/test';
-import { patientName } from './registration-page';
-import { firstUser, secondUser, thirdUser } from './keycloak';
+import { user, userThree, userTwo } from './keycloak';
 
 export const delay = (mills) => {
   const endTime = Date.now() + mills;
@@ -17,26 +16,26 @@ export class HomePage {
   readonly patientAdvancedSearch = () => this.page.locator('button[type="submit"]:text("Search")');
   readonly floatingSearchResultsContainer = () => this.page.locator('[data-testid="floatingSearchResultsContainer"]');
   readonly editPatientButton = () => this.page.getByRole('menuitem', { name: /edit patient details/i });
+  readonly wardsButton = () => this.page.getByRole('link', { name: /wards/i });
 
-  async login() {
+  async navigateToLoginPage() {
     await this.page.goto(`${process.env.O3_URL_DEV}`);
     await expect(this.page.locator('#username')).toBeVisible();
-    await this.page.locator('#username').fill(`${process.env.O3_USERNAME}`);
+    await expect(this.page.locator('#password')).toBeVisible();
+  }
+
+  async loginWithUser() {
+    await this.page.locator('#username').fill(`${user.userName}`);
     await this.enterLoginCredentials();
   }
 
-  async loginWithFirstUser() {
-    await this.page.locator('#username').fill(`${firstUser.userName}`);
+  async loginWithUserTwo() {
+    await this.page.locator('#username').fill(`${userTwo.userName}`);
     await this.enterLoginCredentials();
   }
 
-  async loginWithSecondUser() {
-    await this.page.locator('#username').fill(`${secondUser.userName}`);
-    await this.enterLoginCredentials();
-  }
-
-  async loginWithThirdUser() {
-    await this.page.locator('#username').fill(`${thirdUser.userName}`);
+  async loginWithUserThree() {
+    await this.page.locator('#username').fill(`${userThree.userName}`);
     await this.enterLoginCredentials();
   }
 
@@ -54,11 +53,8 @@ export class HomePage {
     await expect(this.page).toHaveURL(/.*home/);
   }
 
-  async searchPatient(searchText: string) {
-    await this.navigateToHomePage();
-    await this.patientSearchIcon().click();
-    await this.patientSearchBar().fill(searchText);
-    await this.page.getByRole('link', { name: `${patientName.firstName + ' ' + patientName.givenName}` }).first().click();
+  async navigateToWardsPage() {
+    await this.wardsButton().click();
   }
 
   async clickOnPatientResult(name: string) {
@@ -71,34 +67,8 @@ export class HomePage {
     await this.editPatientButton().click(), delay(6000);
   }
 
-  async navigateToLoginPage() {
-    await this.page.goto(`${process.env.O3_URL_DEV}`);
-    await expect(this.page.locator('#username')).toBeVisible();
-    await expect(this.page.locator('#password')).toBeVisible();
-  }
-
   async logout() {
     await this.page.getByRole('button', { name: /my account/i }).click();
     await this.page.getByRole('button', { name: /logout/i }).click(), delay(2000);
-  }
-
-  async voidPatient() {
-    await this.page.goto(`${process.env.O3_URL_DEV}/openmrs/admin/patients/index.htm`);
-    await expect(this.page.getByPlaceholder(' ')).toBeVisible();
-    await this.page.getByPlaceholder(' ').type(`${patientName.firstName + ' ' + patientName.givenName}`);
-    await this.page.locator('#openmrsSearchTable tbody tr.odd td:nth-child(1)').click();
-    await this.page.locator('input[name="voidReason"]').fill('Void patient created by smoke test');
-    await this.page.getByRole('button', { name: 'Delete Patient', exact: true }).click();
-    await expect(this.page.locator('//*[@id="patientFormVoided"]')).toContainText(/this patient has been deleted/i);
-  }
-
-  async voidUnknownPatient() {
-    await this.page.goto(`${process.env.O3_URL_DEV}/openmrs/admin/patients/index.htm`);
-    await expect(this.page.getByPlaceholder(' ')).toBeVisible();
-    await this.page.getByPlaceholder(' ').type('Unknown Unknown');
-    await this.page.locator('#openmrsSearchTable tbody tr.odd td:nth-child(1)').click();
-    await this.page.locator('input[name="voidReason"]').fill('Void patient created by smoke test');
-    await this.page.getByRole('button', { name: 'Delete Patient', exact: true }).click();
-    await expect(this.page.locator('//*[@id="patientFormVoided"]')).toContainText(/this patient has been deleted/i);
   }
 }

@@ -1,8 +1,5 @@
 import { expect, type Page } from '@playwright/test';
 import { delay, HomePage } from './home-page';
-import { patientName } from './registration-page';
-
-let homePage :  HomePage;
 
 export class VisitsPage {
   constructor(readonly page: Page) {}
@@ -12,8 +9,6 @@ export class VisitsPage {
   }
 
   async startPatientVisit() {
-    homePage = new HomePage(this.page);
-    await homePage.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
     await this.page.getByRole('button', { name: /start a visit/i }).click();
     await this.page.getByTestId('combo').getByRole('button', { name: 'Open' }).click();
     await this.page.getByTestId('combo').getByText(/inpatient ward/i).click();
@@ -23,7 +18,7 @@ export class VisitsPage {
   }
 
   async updatePatientVisit() {
-    await this.page.getByRole('button', { name: /edit visit details/i }).click();
+    await this.page.getByRole('button', { name: /edit visit details/i }).nth(0).click();
     await this.page.locator('label').filter({ hasText: 'Home Visit' }).locator('span').first().click();
     await this.page.getByRole('button', { name: /update visit/i }).click(), delay(3000);
   }

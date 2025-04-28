@@ -1,19 +1,19 @@
 import { Page, expect } from '@playwright/test';
 import { delay } from './home-page';
 
-export var firstUser = {
+export var user = {
   userName : '',
   firstName : '',
   email : '',
 }
 
-export var secondUser = {
+export var userTwo = {
   userName : '',
   firstName : '',
   email : '',
 }
 
-export var thirdUser = {
+export var userThree = {
   userName : '',
   firstName : '',
   email : '',
@@ -40,43 +40,55 @@ export class Keycloak {
     await this.page.getByRole('link', { name: /users/i }).click();
   }
 
-  async createFirstUser() {
-    firstUser = {
+  async createUser() {
+    user = {
       userName : `${Array.from({ length: 5 }, () => String.fromCharCode(Math.floor(Math.random() * 26) + 97)).join('')}`,
       firstName: `${Array.from({ length: 6 }, () => String.fromCharCode(Math.floor(Math.random() * 26) + 97)).join('')}`,
       email: `${Array.from({ length: 6 }, () => String.fromCharCode(Math.floor(Math.random() * 26) + 97)).join('')}@gmail.com`
     }
-    await this.page.locator('input[name="username"]').fill(`${firstUser.userName}`);
-    await this.page.getByTestId('email-input').fill(`${firstUser.email}`);
+    await this.page.locator('input[name="username"]').fill(`${user.userName}`);
+    await this.page.getByTestId('email-input').fill(`${user.email}`);
     await this.page.locator('label').filter({ hasText: /yesno/i }).locator('span').first().click(), delay(1000);
-    await this.page.getByTestId('firstName-input').fill(`${firstUser.firstName}`);
+    await this.page.getByTestId('firstName-input').fill(`${user.firstName}`);
     await this.saveUser();
+    await this.navigateToCredentials();
+    await this.createUserPassword();
+    await this.navigateToRoles();
+    await this.assignRoleToUser();
   }
 
-  async createSecondUser() {
-    secondUser = {
+  async createUserTwo() {
+    userTwo = {
       userName : `${Array.from({ length: 5 }, () => String.fromCharCode(Math.floor(Math.random() * 26) + 97)).join('')}`,
       firstName: `${Array.from({ length: 6 }, () => String.fromCharCode(Math.floor(Math.random() * 26) + 97)).join('')}`,
       email: `${Array.from({ length: 6 }, () => String.fromCharCode(Math.floor(Math.random() * 26) + 97)).join('')}@gmail.com`
     }
-    await this.page.locator('input[name="username"]').fill(`${secondUser.userName}`);
-    await this.page.getByTestId('email-input').fill(`${secondUser.email}`);
+    await this.page.locator('input[name="username"]').fill(`${userTwo.userName}`);
+    await this.page.getByTestId('email-input').fill(`${userTwo.email}`);
     await this.page.locator('label').filter({ hasText: /yesno/i }).locator('span').first().click(), delay(1000);
-    await this.page.getByTestId('firstName-input').fill(`${secondUser.firstName}`);
+    await this.page.getByTestId('firstName-input').fill(`${userTwo.firstName}`);
     await this.saveUser();
+    await this.navigateToCredentials();
+    await this.createUserPassword();
+    await this.navigateToRoles();
+    await this.assignRoleToUser();
   }
 
-  async createThirdUser() {
-    thirdUser = {
+  async createUserThree() {
+    userThree = {
       userName : `${Array.from({ length: 5 }, () => String.fromCharCode(Math.floor(Math.random() * 26) + 97)).join('')}`,
       firstName: `${Array.from({ length: 6 }, () => String.fromCharCode(Math.floor(Math.random() * 26) + 97)).join('')}`,
       email: `${Array.from({ length: 6 }, () => String.fromCharCode(Math.floor(Math.random() * 26) + 97)).join('')}@gmail.com`
     }
-    await this.page.locator('input[name="username"]').fill(`${thirdUser.userName}`);
-    await this.page.getByTestId('email-input').fill(`${thirdUser.email}`);
+    await this.page.locator('input[name="username"]').fill(`${userThree.userName}`);
+    await this.page.getByTestId('email-input').fill(`${userThree.email}`);
     await this.page.locator('label').filter({ hasText: /yesno/i }).locator('span').first().click(), delay(1000);
-    await this.page.getByTestId('firstName-input').fill(`${thirdUser.firstName}`);
+    await this.page.getByTestId('firstName-input').fill(`${userThree.firstName}`);
     await this.saveUser();
+    await this.navigateToCredentials();
+    await this.createUserPassword();
+    await this.navigateToRoles();
+    await this.assignRoleToUser();
   }
 
   async saveUser() {
@@ -113,22 +125,30 @@ export class Keycloak {
   await expect(this.page.getByText(/user role mapping successfully updated/i)).toBeVisible();
   }
 
+  async deleteUser() {
+    await this.open();
+    await this.page.goto(`${process.env.KEYCLOAK_URL_DEV}/admin/master/console/#/ozone/users`);
+    await this.page.getByRole('textbox', { name: 'search' }).fill(`${user.userName}`);
+    await this.page.getByRole('textbox', { name: 'search' }).press('Enter'), delay(1500);
+    await this.confirmDelete();
+  }
+
   async deleteUsers() {
     await this.open();
     await this.page.goto(`${process.env.KEYCLOAK_URL_DEV}/admin/master/console/#/ozone/users`);
-    await this.page.getByRole('textbox', { name: 'search' }).fill(`${firstUser.userName}`);
-    await this.page.getByRole('textbox', { name: 'search' }).press('Enter'), delay(1000);
+    await this.page.getByRole('textbox', { name: 'search' }).fill(`${user.userName}`);
+    await this.page.getByRole('textbox', { name: 'search' }).press('Enter'), delay(1500);
     await this.confirmDelete();
-    await this.page.getByRole('textbox', { name: 'search' }).fill(`${secondUser.userName}`);
-    await this.page.getByRole('textbox', { name: 'search' }).press('Enter'), delay(1000);
+    await this.page.getByRole('textbox', { name: 'search' }).fill(`${userTwo.userName}`);
+    await this.page.getByRole('textbox', { name: 'search' }).press('Enter'), delay(1500);
     await this.confirmDelete();
-    await this.page.getByRole('textbox', { name: 'search' }).fill(`${thirdUser.userName}`);
-    await this.page.getByRole('textbox', { name: 'search' }).press('Enter'), delay(1000);
+    await this.page.getByRole('textbox', { name: 'search' }).fill(`${userThree.userName}`);
+    await this.page.getByRole('textbox', { name: 'search' }).press('Enter'), delay(1500);
     await this.confirmDelete();
   }
 
   async confirmDelete() {
-    await this.page.getByRole('button', { name: /actions/i }).click();
+    await this.page.getByRole('button', { name: /actions/i }).first().click();
     await this.page.getByRole('menuitem', { name: /delete/i }).click();
     await this.page.getByTestId('confirm').click();
     await expect(this.page.getByText(/the user has been deleted/i).first()).toBeVisible();

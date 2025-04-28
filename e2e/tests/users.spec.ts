@@ -17,29 +17,17 @@ test('User creation and data filtering', async ({ page }) => {
   test.setTimeout(240000);
   await keycloak.navigateToUsers();
   await keycloak.addUserButton().click();
-  await keycloak.createFirstUser();
-  await keycloak.navigateToCredentials();
-  await keycloak.createUserPassword();
-  await keycloak.navigateToRoles();
-  await keycloak.assignRoleToUser();
+  await keycloak.createUser();
   await page.getByLabel('Breadcrumb').getByRole('link', { name: /users/i }).click();
   await keycloak.addUserButton().click();
-  await keycloak.createSecondUser();
-  await keycloak.navigateToCredentials();
-  await keycloak.createUserPassword();
-  await keycloak.navigateToRoles();
-  await keycloak.assignRoleToUser();
+  await keycloak.createUserTwo();
   await page.getByLabel('Breadcrumb').getByRole('link', { name: /users/i }).click();
   await keycloak.addUserButton().click();
-  await keycloak.createThirdUser();
-  await keycloak.navigateToCredentials();
-  await keycloak.createUserPassword();
-  await keycloak.navigateToRoles();
-  await keycloak.assignRoleToUser();
+  await keycloak.createUserThree();
 
   // replay
   await homePage.navigateToLoginPage();
-  await homePage.loginWithFirstUser();
+  await homePage.loginWithUser();
   await homePage.patientSearchIcon().click();
   await homePage.patientSearchBar().fill('Daniel Acosta'), delay(2000);
   await expect(page.getByText('1 search result')).toBeVisible();
@@ -63,7 +51,7 @@ test('User creation and data filtering', async ({ page }) => {
   await homePage.logout();
 
   // verify
-  await homePage.loginWithSecondUser();
+  await homePage.loginWithUserTwo();
   await homePage.patientSearchIcon().click();
   await homePage.patientSearchBar().fill('Daniel Acosta'), delay(3000);
   await expect(page.getByText('1 search result')).toBeVisible();
@@ -84,7 +72,7 @@ test('User creation and data filtering', async ({ page }) => {
   await expect(page.getByText(/sorry, no patient charts were found/i)).toBeVisible();
   await homePage.patientSearchBar().clear(), delay(1000);
   await homePage.logout();
-  await homePage.loginWithThirdUser();
+  await homePage.loginWithUserThree();
   await homePage.patientSearchIcon().click();
   await homePage.patientSearchBar().fill('Daniel Acosta'), delay(3000);
   await expect(page.getByText('1 search result')).toBeVisible();

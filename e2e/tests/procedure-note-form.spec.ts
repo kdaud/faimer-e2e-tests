@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
-import { delay, HomePage } from '../utils/pages/home-page';
+import { delay, HomePage} from '../utils/pages/home-page';
+import { Keycloak } from '../utils/pages/keycloak';
 import { VisitsPage } from '../utils/pages/visits-page';
-import { patientName, RegistrationPage } from '../utils/pages/registration-page';
 import { 
   ClinicalFormsPage,
   complications,
@@ -12,32 +12,39 @@ import {
   procedureSummary,
   updatedComplications,
   updatedConsent,
-  UpdatedProcedureSummary,
-   } from '../utils/pages/clinical-forms-page';
+  updatedProcedureSummary
+} from '../utils/pages/clinical-forms-page';
 
 let homePage: HomePage;
+let keycloak: Keycloak;
 let visitsPage: VisitsPage;
-let registrationPage: RegistrationPage;
 let formsPage: ClinicalFormsPage;
 
 test.beforeEach(async ({ page }) => {
   homePage = new HomePage(page);
+  keycloak = new Keycloak(page);
   visitsPage = new VisitsPage(page);
   formsPage = new ClinicalFormsPage(page);
-  registrationPage = new RegistrationPage(page);
 
-  await homePage.login();
-  await registrationPage.navigateToRegistrationForm();
-  await registrationPage.createPatient();
-  await visitsPage.startPatientVisit();
-  await formsPage.navigateToClinicalForms();
+  await keycloak.open();
+  await keycloak.navigateToUsers();
+  await keycloak.addUserButton().click();
+  await keycloak.createUser();
 });
 
 test('Add procedure note', async ({ page }) => {
   // setup
-  await formsPage.navigateToProcedureNoteForm();
+  await homePage.navigateToLoginPage();
+  await homePage.loginWithUser();
+  await homePage.patientSearchIcon().click();
+  await homePage.patientSearchBar().fill('Daniel Acosta'), delay(2000);
+  await expect(page.getByText('1 search result')).toBeVisible();
+  await homePage.clickOnPatientResult('Daniel Acosta');
+  await visitsPage.startPatientVisit();
 
   // replay
+  await formsPage.navigateToClinicalForms();
+  await formsPage.navigateToProcedureNoteForm();
   await formsPage.fillProcedureNoteForm();
   await formsPage.saveForm();
 
@@ -45,76 +52,108 @@ test('Add procedure note', async ({ page }) => {
   await visitsPage.navigateToVisitsPage();
   await formsPage.navigateToEncounterPage();
   await page.getByRole('button', { name: /expand current row/i }).click();
-  await expect(page.getByText(procedure)).toBeVisible();
-  await expect(page.getByText(indication)).toBeVisible();
-  await expect(page.getByText(physcian)).toBeVisible();
-  await expect(page.getByText(consent)).toBeVisible();
-  await expect(page.getByText(/local anesthesia and sedation/i)).toBeVisible();
-  await expect(page.getByText(procedureSummary)).toBeVisible();
-  await expect(page.getByText(complications)).toBeVisible();
+  await expect(page.locator('//span[normalize-space()="Indication"]/following-sibling::span[1]')).toHaveText(`${indication}`);
+  await expect(page.locator('//span[normalize-space()="Physician"]/following-sibling::span[1]')).toHaveText(`${physcian}`);
+  await expect(page.locator('//span[normalize-space()="Procedure Summary"]/following-sibling::span[1]')).toHaveText(`${procedureSummary}`);
+  await expect(page.locator('//span[normalize-space()="Time of Procedure"]/following-sibling::span[1]')).toHaveText(/2025-04-22/i);
+  await expect(page.locator('//span[normalize-space()="Procedure"]/following-sibling::span[1]')).toHaveText(`${procedure}`);
+  await expect(page.locator('//span[normalize-space()="Consent"]/following-sibling::span[1]')).toHaveText(`${consent}`);
+  await expect(page.locator('//span[normalize-space()="Anesthesia Type"]/following-sibling::span[1]')).toHaveText(/local anesthesia and sedation/i);
+  await expect(page.locator('//span[normalize-space()="Complications"]/following-sibling::span[1]')).toHaveText(`${complications}`);
 });
 
 test('Edit procedure note', async ({ page }) => {
   // setup
+  await homePage.navigateToLoginPage();
+  await homePage.loginWithUser();
+  await homePage.patientSearchIcon().click();
+  await homePage.patientSearchBar().fill('Devan Modi'), delay(2000);
+  await expect(page.getByText('1 search result')).toBeVisible();
+  await homePage.clickOnPatientResult('Devan Modi');
+  await visitsPage.startPatientVisit();
+  await formsPage.navigateToClinicalForms();
   await formsPage.navigateToProcedureNoteForm();
   await formsPage.fillProcedureNoteForm();
   await formsPage.saveForm();
   await visitsPage.navigateToVisitsPage();
   await formsPage.navigateToEncounterPage();
   await page.getByRole('button', { name: /expand current row/i }).click();
-  await expect(page.getByText(procedure)).toBeVisible();
-  await expect(page.getByText(indication)).toBeVisible();
-  await expect(page.getByText(physcian)).toBeVisible();
-  await expect(page.getByText(consent)).toBeVisible();
-  await expect(page.getByText(/local anesthesia and sedation/i)).toBeVisible();
-  await expect(page.getByText(procedureSummary)).toBeVisible();
-  await expect(page.getByText(complications)).toBeVisible();
+  await expect(page.locator('//span[normalize-space()="Indication"]/following-sibling::span[1]')).toHaveText(`${indication}`);
+  await expect(page.locator('//span[normalize-space()="Physician"]/following-sibling::span[1]')).toHaveText(`${physcian}`);
+  await expect(page.locator('//span[normalize-space()="Time of Procedure"]/following-sibling::span[1]')).toHaveText(/2025-04-22/i);
+  await expect(page.locator('//span[normalize-space()="Procedure Summary"]/following-sibling::span[1]')).toHaveText(`${procedureSummary}`);
+  await expect(page.locator('//span[normalize-space()="Procedure"]/following-sibling::span[1]')).toHaveText(`${procedure}`);
+  await expect(page.locator('//span[normalize-space()="Consent"]/following-sibling::span[1]')).toHaveText(`${consent}`);
+  await expect(page.locator('//span[normalize-space()="Anesthesia Type"]/following-sibling::span[1]')).toHaveText(/local anesthesia and sedation/i);
+  await expect(page.locator('//span[normalize-space()="Complications"]/following-sibling::span[1]')).toHaveText(`${complications}`);
 
   // replay
   await formsPage.updateProcedureNote();
+  await homePage.navigateToHomePage();
+  await homePage.patientSearchIcon().click();
+  await homePage.patientSearchBar().fill('Devan Modi'), delay(2000);
+  await expect(page.getByText('1 search result')).toBeVisible();
+  await homePage.clickOnPatientResult('Devan Modi');
 
   // verify
-  await homePage.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
   await visitsPage.navigateToVisitsPage();
   await formsPage.navigateToEncounterPage();
   await page.getByRole('button', { name: /expand current row/i }).click();
-  await expect(page.getByText(consent)).not.toBeVisible();
-  await expect(page.getByText(updatedConsent)).toBeVisible();
-  await expect(page.getByText(/local anesthesia and sedation/i)).not.toBeVisible();
-  await expect(page.getByText(/monitored anesthesia care/i)).toBeVisible();
-  await expect(page.getByText(procedureSummary)).not.toBeVisible();
-  await expect(page.getByText(UpdatedProcedureSummary)).toBeVisible();
-  await expect(page.getByText(complications)).not.toBeVisible();
-  await expect(page.getByText(updatedComplications)).toBeVisible();
+  await expect(page.locator('//span[normalize-space()="Time of Procedure"]/following-sibling::span[1]')).not.toHaveText(/2025-04-22/i);
+  await expect(page.locator('//span[normalize-space()="Time of Procedure"]/following-sibling::span[1]')).toHaveText(/2025-03-24/i);
+  await expect(page.locator('//span[normalize-space()="Consent"]/following-sibling::span[1]')).not.toHaveText(`${consent}`);
+  await expect(page.locator('//span[normalize-space()="Consent"]/following-sibling::span[1]')).toHaveText(`${updatedConsent}`);
+  await expect(page.locator('//span[normalize-space()="Anesthesia Type"]/following-sibling::span[1]')).not.toHaveText(/local anesthesia and sedation/i);
+  await expect(page.locator('//span[normalize-space()="Anesthesia Type"]/following-sibling::span[1]')).toHaveText(/monitored anesthesia care/i);
+  await expect(page.locator('//span[normalize-space()="Procedure Summary"]/following-sibling::span[1]')).not.toHaveText(`${procedureSummary}`);
+  await expect(page.locator('//span[normalize-space()="Procedure Summary"]/following-sibling::span[1]')).toHaveText(`${updatedProcedureSummary}`);
+  await expect(page.locator('//span[normalize-space()="Complications"]/following-sibling::span[1]')).not.toHaveText(`${complications}`);
+  await expect(page.locator('//span[normalize-space()="Complications"]/following-sibling::span[1]')).toHaveText(`${updatedComplications}`);
 });
 
-test('Delete procudure note', async ({ page }) => {
+test('Delete procedure note', async ({ page }) => {
   // setup
+  await homePage.navigateToLoginPage();
+  await homePage.loginWithUser();
+  await homePage.patientSearchIcon().click();
+  await homePage.patientSearchBar().fill('Leon Wagner'), delay(2000);
+  await expect(page.getByText('1 search result')).toBeVisible();
+  await homePage.clickOnPatientResult('Leon Wagner');
+  await visitsPage.startPatientVisit();
+  await formsPage.navigateToClinicalForms();
   await formsPage.navigateToProcedureNoteForm();
   await formsPage.fillProcedureNoteForm();
   await formsPage.saveForm();
   await visitsPage.navigateToVisitsPage();
   await formsPage.navigateToEncounterPage();
   await page.getByRole('button', { name: /expand current row/i }).click();
-  await expect(page.getByText(procedure)).toBeVisible();
-  await expect(page.getByText(indication)).toBeVisible();
-  await expect(page.getByText(physcian)).toBeVisible();
-  await expect(page.getByText(consent)).toBeVisible();
-  await expect(page.getByText(/local anesthesia and sedation/i)).toBeVisible();
-  await expect(page.getByText(procedureSummary)).toBeVisible();
-  await expect(page.getByText(complications)).toBeVisible();
+  await expect(page.locator('//span[normalize-space()="Indication"]/following-sibling::span[1]')).toHaveText(`${indication}`);
+  await expect(page.locator('//span[normalize-space()="Physician"]/following-sibling::span[1]')).toHaveText(`${physcian}`);
+  await expect(page.locator('//span[normalize-space()="Time of Procedure"]/following-sibling::span[1]')).toHaveText(/2025-04-22/i);
+  await expect(page.locator('//span[normalize-space()="Procedure Summary"]/following-sibling::span[1]')).toHaveText(`${procedureSummary}`);
+  await expect(page.locator('//span[normalize-space()="Procedure"]/following-sibling::span[1]')).toHaveText(`${procedure}`);
+  await expect(page.locator('//span[normalize-space()="Consent"]/following-sibling::span[1]')).toHaveText(`${consent}`);
+  await expect(page.locator('//span[normalize-space()="Anesthesia Type"]/following-sibling::span[1]')).toHaveText(/local anesthesia and sedation/i);
+  await expect(page.locator('//span[normalize-space()="Complications"]/following-sibling::span[1]')).toHaveText(`${complications}`);
 
   // replay
-  await page.getByRole('button', { name: /danger delete this encounter/i }).click();
-  await page.getByRole('button', { name: 'danger Delete', exact: true }).click(), delay(3000);
+  await formsPage.deleteEncounter();
+  await homePage.navigateToHomePage();
+  await homePage.patientSearchIcon().click();
+  await homePage.patientSearchBar().fill('Leon Wagner'), delay(2000);
+  await expect(page.getByText('1 search result')).toBeVisible();
+  await homePage.clickOnPatientResult('Leon Wagner');
 
   // verify
-  await homePage.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
   await visitsPage.navigateToVisitsPage();
   await formsPage.navigateToEncounterPage();
   await expect(page.getByText(/There are no encounters to display for this patient/).nth(0)).toBeVisible();
 });
 
-test.afterEach(async ({}) => {
-  await homePage.voidPatient();
+test.afterEach(async ({ browser }) => {
+  const context = await browser.newContext();
+  const page = await context.newPage();
+  const keycloak = new Keycloak(page);
+  await keycloak.deleteUser();
+  await context.close();
 });
