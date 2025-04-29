@@ -26,7 +26,7 @@ test.beforeEach(async ({ page, context }) => {
   await keycloak.createUser();
 });
 
-test('Add a lab test', async ({ page }) => {
+test('Add an imaging order', async ({ page }) => {
   // setup
   await homePage.navigateToLoginPage();
   await homePage.loginWithUser();
@@ -38,49 +38,49 @@ test('Add a lab test', async ({ page }) => {
 
   // replay
   await chartPage.navigateToOrderBasket();
-  await ordersPage.navigateToLabOrderForm();
-  await page.getByRole('searchbox').fill('Bacteriuria test, urine'), delay(2500);
+  await ordersPage.navigateToImagingOrderForm();
+  await page.getByRole('searchbox').fill('CT cervical spine'), delay(2500);
   await page.getByRole('button', { name: /order form/i }).click();
   await ordersPage.saveOrder();
 
   // verify
   await ordersPage.navigateToOrdersPage();
-  await expect(page.locator("//tr[td[text()='Test order']]").nth(0)).toBeVisible();
-  await expect(page.locator("//tr[td[text()='Test order'] and td[text()='Bacteriuria test, urine']]")).toBeVisible();
-  await expect(page.locator("//tr[td[text()='Test order'] and td[text()='Bacteriuria test, urine']]//div[@data-priority='routine']")).toBeVisible();
+  await expect(page.locator("//tr[td[text()='Imaging orders']]").nth(0)).toBeVisible();
+  await expect(page.locator("//tr[td[text()='Imaging orders'] and td[text()='CT cervical spine']]")).toBeVisible();
+  await expect(page.locator("//tr[td[text()='Imaging orders'] and td[text()='CT cervical spine']]//div[@data-priority='routine']")).toBeVisible();
 });
 
-test('Modify a lab order', async ({ page }) => {
+test('Modify an imaging order', async ({ page }) => {
   // setup
   await homePage.navigateToLoginPage();
   await homePage.loginWithUser();
   await homePage.patientSearchIcon().click();
-  await homePage.patientSearchBar().fill('Daichi Okada'), delay(2000);
+  await homePage.patientSearchBar().fill('Devan Modi'), delay(2000);
   await expect(page.getByText('1 search result')).toBeVisible();
-  await homePage.clickOnPatientResult('Daichi Okada');
+  await homePage.clickOnPatientResult('Devan Modi');
   await visitsPage.startPatientVisit();
   await chartPage.navigateToOrderBasket();
-  await ordersPage.navigateToLabOrderForm();
-  await page.getByRole('searchbox').fill('Blood urea nitrogen'), delay(2500);
+  await ordersPage.navigateToImagingOrderForm();
+  await page.getByRole('searchbox').fill('X Ray soft tissue neck'), delay(2500);
   await page.getByRole('button', { name: /order form/i }).click();
   await ordersPage.saveOrder();
   await ordersPage.navigateToOrdersPage();
-  await expect(page.locator("//tr[td[text()='Test order']]").nth(0)).toBeVisible();
-  await expect(page.locator("//tr[td[text()='Test order'] and td[text()='Blood urea nitrogen']]")).toBeVisible();
-  await expect(page.locator("//tr[td[text()='Test order'] and td[text()='Blood urea nitrogen']]//div[@data-priority='routine']")).toBeVisible();
+  await expect(page.locator("//tr[td[text()='Imaging orders']]").nth(0)).toBeVisible();
+  await expect(page.locator("//tr[td[text()='Imaging orders'] and td[text()='X Ray soft tissue neck']]")).toBeVisible();
+  await expect(page.locator("//tr[td[text()='Imaging orders'] and td[text()='X Ray soft tissue neck']]//div[@data-priority='routine']")).toBeVisible();
 
   // replay
-  await ordersPage.modifyLabOrder();
+  await ordersPage.modifyImagingOrder();
   await ordersPage.saveOrder();
 
   // verify
-  await expect(page.locator("//tr[td[text()='Test order']]").nth(0)).toBeVisible();
-  await expect(page.locator("//tr[td[text()='Test order'] and td[text()='Blood urea nitrogen']]")).toBeVisible();
-  await expect(page.locator("//tr[td[text()='Test order'] and td[text()='Blood urea nitrogen']]//div[@data-priority='routine']")).not.toBeVisible();
-  await expect(page.locator("//tr[td[text()='Test order'] and td[text()='Blood urea nitrogen']]//div[@data-priority='stat']")).toBeVisible();
+  await expect(page.locator("//tr[td[text()='Imaging orders']]").nth(0)).toBeVisible();
+  await expect(page.locator("//tr[td[text()='Imaging orders'] and td[text()='X Ray soft tissue neck']]")).toBeVisible();
+  await expect(page.locator("//tr[td[text()='Imaging orders'] and td[text()='X Ray soft tissue neck']]//div[@data-priority='routine']")).not.toBeVisible();
+  await expect(page.locator("//tr[td[text()='Imaging orders'] and td[text()='X Ray soft tissue neck']]//div[@data-priority='stat']")).toBeVisible();
 });
 
-test('Discontinue a lab order', async ({ page }) => {
+test('Discontinue an imaging order', async ({ page }) => {
   // setup
   await homePage.navigateToLoginPage();
   await homePage.loginWithUser();
@@ -90,21 +90,21 @@ test('Discontinue a lab order', async ({ page }) => {
   await homePage.clickOnPatientResult('Florencia Klinger');
   await visitsPage.startPatientVisit();
   await chartPage.navigateToOrderBasket();
-  await ordersPage.navigateToLabOrderForm();
-  await page.getByRole('searchbox').fill('Complete blood count'), delay(2500);
+  await ordersPage.navigateToImagingOrderForm();
+  await page.getByRole('searchbox').fill('MRI brain (with contrast)'), delay(2500);
   await page.getByRole('button', { name: /order form/i }).click();
   await ordersPage.saveOrder();
   await ordersPage.navigateToOrdersPage();
-  await expect(page.locator("//tr[td[text()='Test order']]").nth(0)).toBeVisible();
-  await expect(page.locator("//tr[td[text()='Test order'] and td[text()='Complete blood count']]")).toBeVisible();
-  await expect(page.locator("//tr[td[text()='Test order'] and td[text()='Complete blood count']]//div[@data-priority='routine']")).toBeVisible();
+  await expect(page.locator("//tr[td[text()='Imaging orders']]").nth(0)).toBeVisible();
+  await expect(page.locator("//tr[td[text()='Imaging orders'] and td[text()='MRI brain (with contrast)']]")).toBeVisible();
+  await expect(page.locator("//tr[td[text()='Imaging orders'] and td[text()='MRI brain (with contrast)']]//div[@data-priority='routine']")).toBeVisible();
 
   // replay
   await ordersPage.cancelOrder();
 
   // verify
-  await expect(page.locator("//tr[td[text()='Test order'] and td[text()='Complete blood count']]")).not.toBeVisible();
-  await expect(page.locator("//tr[td[text()='Test order'] and td[text()='Complete blood count']]//div[@data-priority='routine']")).not.toBeVisible();
+  await expect(page.locator("//tr[td[text()='Imaging orders'] and td[text()='MRI brain (with contrast)']]")).not.toBeVisible();
+  await expect(page.locator("//tr[td[text()='Imaging orders'] and td[text()='MRI brain (with contrast)']]//div[@data-priority='routine']")).not.toBeVisible();
 });
 
 test.afterEach(async ({ browser }) => {

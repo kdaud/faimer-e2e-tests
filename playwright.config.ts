@@ -16,7 +16,6 @@ const config: PlaywrightTestConfig = {
   globalSetup: require.resolve('./e2e/utils/configs/globalSetup'),
   use: {
     baseURL: `${process.env.O3_URL_DEV}/spa/`,
-    storageState: 'e2e/storageState.json',
   },
   projects: [
     {
@@ -24,6 +23,9 @@ const config: PlaywrightTestConfig = {
       use: {
         ...devices['Desktop Chromium'],
         viewport: { width: 1920, height: 1080 },
+        launchOptions: {
+          args: ['--incognito'],
+        }
       },
       
     },

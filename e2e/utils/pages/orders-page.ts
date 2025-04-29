@@ -10,39 +10,33 @@ export class OrdersPage {
     await this.page.getByRole('link', { name: /orders/i }).click();
   }
 
-  async navigateToLabOrderForm() {
-    await expect(this.page.locator('div').filter({ hasText: /^Drug orders \(0\)AddViewLab orders \(0\)AddView$/ }).getByRole('button').nth(2)).toBeVisible();
-    await this.page.locator('div').filter({ hasText: /^Drug orders \(0\)AddViewLab orders \(0\)AddView$/ }).getByRole('button').nth(2).click();
-  }
-
   async navigateToDrugOrderForm() {
-    await expect(this.page.locator('div').filter({ hasText: /^Drug orders \(0\)AddViewLab orders \(0\)AddView$/ }).getByRole('button').first()).toBeVisible();
-    await this.page.locator('div').filter({ hasText: /^Drug orders \(0\)AddViewLab orders \(0\)AddView$/ }).getByRole('button').first().click();
+    await expect(this.page.locator('text=Drug orders').locator('xpath=../..').locator('button:has-text("Add")')).toBeVisible();
+    await this.page.locator('text=Drug orders').locator('xpath=../..').locator('button:has-text("Add")').click();
+  }
+  async navigateToLabOrderForm() {
+    await expect(this.page.locator('text=Lab orders').locator('xpath=../..').locator('button:has-text("Add")')).toBeVisible();
+    await this.page.locator('text=Lab orders').locator('xpath=../..').locator('button:has-text("Add")').click();
   }
 
-  async saveLabOrder() {
-    await this.page.waitForSelector('button:has-text("save order")');
-    await this.page.getByRole('button', { name: /save order/i }).click(), delay(3000);
-    await this.page.waitForSelector('button:has-text("sign and close")');
-    await this.page.getByRole('button', { name: /sign and close/i }).click();
-    await expect(this.page.getByText(/error/i)).not.toBeVisible();
-    await expect(this.page.getByText(/placed orders/i)).toBeVisible(), delay(5000);
+  async navigateToImagingOrderForm() {
+    await expect(this.page.locator('text=Imaging orders').locator('xpath=../..').locator('button:has-text("Add")')).toBeVisible();
+    await this.page.locator('text=Imaging orders').locator('xpath=../..').locator('button:has-text("Add")').click();
   }
 
   async modifyLabOrder() {
     await this.page.getByRole('button', { name: /options/i }).nth(0).click();
     await this.page.getByRole('menuitem', { name: /modify order/i }).click();
-    await expect(this.page.getByRole('cell', { name: /bacteriuria test, urine/i })).toBeVisible();
     await this.page.locator('#labReferenceNumberInput').fill('202');
     await this.page.getByLabel('Priority').selectOption('STAT');
     await this.page.getByLabel(/additional instructions/i).fill('Take urine sample'), delay(2000);
   }
 
-  async cancelLabOrder() {
-    await this.page.getByRole('button', { name: /options/i }).nth(0).click(), delay(2000);
-    await this.page.getByRole('menuitem', { name: /cancel order/i }).click(), delay(3000);
-    await this.page.getByRole('button', { name: /sign and close/i }).click();
-    await expect(this.page.getByText(/discontinued Blood urea nitrogen/i)).toBeVisible();
+  async modifyImagingOrder() {
+    await this.page.getByRole('button', { name: /options/i }).nth(0).click();
+    await this.page.getByRole('menuitem', { name: /modify order/i }).click();
+    await this.page.getByLabel('Priority').selectOption('STAT');
+    await this.page.getByLabel(/additional instructions/i).fill('Patient has stridor and difficulty swallowing. Please obtain AP and lateral views with the patient in an upright position if tolerated'), delay(2000);
   }
 
   async fillDrugOrderForm() {
@@ -58,10 +52,12 @@ export class OrdersPage {
     await this.page.locator('#indication').fill('Hypertension');
   }
 
-  async saveDrugOrder() {
+  async saveOrder() {
     await this.page.getByRole('button', { name: /save order/i }).click(), delay(3000);
     await this.page.getByRole('button', { name: /sign and close/i }).focus();
-    await this.page.getByRole('button', { name: /sign and close/i }).click();
+    await this.page.getByRole('button', { name: /sign and close/i }).click(), delay(1000);
+    await expect(this.page.getByText(/error/i)).not.toBeVisible();
+    await expect(this.page.getByText(/placed orders/i)).toBeVisible(), delay(5000);
   }
 
   async modifyDrugOrder() {
@@ -75,7 +71,9 @@ export class OrdersPage {
     await this.page.getByRole('button', { name: /save order/i }).dispatchEvent('click');
     await expect(this.page.getByText(/sign and close/i)).toBeVisible();
     await this.page.getByRole('button', { name: /sign and close/i }).focus();
-    await this.page.getByRole('button', { name: /sign and close/i }).dispatchEvent('click');
+    await this.page.getByRole('button', { name: /sign and close/i }).dispatchEvent('click'), delay(1000);
+    await expect(this.page.getByText(/error/i)).not.toBeVisible();
+    await expect(this.page.getByText(/placed orders/i)).toBeVisible(), delay(5000);
   }
 
   async discontinueDrugOrder() {
@@ -84,6 +82,16 @@ export class OrdersPage {
     await expect(this.page.getByText(/discontinue/i)).toBeVisible();
     await expect(this.page.getByText(/sign and close/i)).toBeVisible();
     await this.page.getByRole('button', { name: /sign and close/i }).focus();
-    await this.page.getByRole('button', { name: /sign and close/i }).dispatchEvent('click');
+    await this.page.getByRole('button', { name: /sign and close/i }).dispatchEvent('click'), delay(1000);
+    await expect(this.page.getByText(/error/i)).not.toBeVisible();
+    await expect(this.page.getByText(/discontinued/)).toBeVisible();
+  }
+
+  async cancelOrder() {
+    await this.page.getByRole('button', { name: /options/i }).nth(0).click(), delay(2000);
+    await this.page.getByRole('menuitem', { name: /cancel order/i }).click(), delay(3000);
+    await this.page.getByRole('button', { name: /sign and close/i }).click(), delay(1000);
+    await expect(this.page.getByText(/error/i)).not.toBeVisible();
+    await expect(this.page.getByText(/discontinued/i)).toBeVisible();
   }
 }

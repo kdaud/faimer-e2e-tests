@@ -1,4 +1,5 @@
 import { type Page } from '@playwright/test';
+import { delay } from './home-page';
 
 export class ChartPage {
   constructor(readonly page: Page) {}
@@ -7,7 +8,7 @@ export class ChartPage {
   readonly medicationsTable = () => this.page.getByRole('table', { name: /medications/i });
 
   async navigateToOrderBasket() {
-    await this.orderBasketButton().click();
+    await this.orderBasketButton().click(), delay(3000);
   }
 
   async navigateToMedicationsPage() {

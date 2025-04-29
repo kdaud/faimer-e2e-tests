@@ -11,7 +11,9 @@ let visitsPage: VisitsPage;
 let chartPage: ChartPage;
 let ordersPage: OrdersPage;
 
-test.beforeEach(async ({ page }) => {
+test.beforeEach(async ({ page, context }) => {
+  await context.clearCookies();
+  await context.clearPermissions();
   homePage = new HomePage(page);
   keycloak = new Keycloak(page);
   visitsPage = new VisitsPage(page);
@@ -40,7 +42,7 @@ test('Add a drug order', async ({ page }) => {
   await page.getByRole('searchbox').fill('Aspirin 325mg');
   await page.getByRole('button', { name: /order form/i }).click();
   await ordersPage.fillDrugOrderForm();
-  await ordersPage.saveDrugOrder();
+  await ordersPage.saveOrder();
 
   // verify
   await chartPage.navigateToMedicationsPage();
@@ -66,7 +68,7 @@ test('Modify a drug order', async ({ page }) => {
   await page.getByRole('searchbox').fill('Aspirin 325mg');
   await page.getByRole('button', { name: /order form/i }).click();
   await ordersPage.fillDrugOrderForm();
-  await ordersPage.saveDrugOrder();
+  await ordersPage.saveOrder();
   await chartPage.navigateToMedicationsPage();
   await expect(page.getByText(/aspirin 325mg/i).nth(0)).toBeVisible();
   await expect(page.getByText(/12 tablet/i).nth(0)).toBeVisible();
@@ -104,7 +106,7 @@ test('Discontinue a drug order', async ({ page }) => {
   await page.getByRole('searchbox').fill('Aspirin 325mg');
   await page.getByRole('button', { name: /order form/i }).click();
   await ordersPage.fillDrugOrderForm();
-  await ordersPage.saveDrugOrder();
+  await ordersPage.saveOrder();
   await chartPage.navigateToMedicationsPage();
   await expect(page.getByText(/aspirin 325mg/i).nth(0)).toBeVisible();
   await expect(page.getByText(/12 tablet/i).nth(0)).toBeVisible();
@@ -141,7 +143,7 @@ test('Add a drug order with free text dosage', async ({ page }) => {
   await page.getByLabel(/quantity to dispense/i).fill('18');
   await page.getByLabel(/prescription refills/i).fill('2');
   await page.locator('#indication').fill('Hypertension');
-  await ordersPage.saveDrugOrder();
+  await ordersPage.saveOrder();
 
   // verify
   await chartPage.navigateToMedicationsPage();
