@@ -194,7 +194,7 @@ export class ClinicalFormsPage {
     await this.page.locator('#procedureNoteConsent').fill(consent);
     await this.page.locator('label').filter({ hasText: /local anesthesia and sedation/i }).locator('span').first().click();
     await this.page.locator('#procedureNoteProcedureSummary').fill(procedureSummary);
-    await this.page.locator('#procedureNoteComplecations').fill(complications);
+    await this.page.locator('#procedureNoteComplications').fill(complications);
   }
 
   async updateProcedureNote() {
@@ -204,7 +204,7 @@ export class ClinicalFormsPage {
     await this.page.locator('#procedureNoteConsent').fill(updatedConsent);
     await this.page.locator('label').filter({ hasText: /monitored anesthesia care/i }).locator('span').first().click();
     await this.page.locator('#procedureNoteProcedureSummary').fill(updatedProcedureSummary);
-    await this.page.locator('#procedureNoteComplecations').fill(updatedComplications);
+    await this.page.locator('#procedureNoteComplications').fill(updatedComplications);
     await this.page.getByRole('button', { name: /save/i }).click(), delay(2000);
   }
 
