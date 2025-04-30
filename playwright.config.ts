@@ -23,6 +23,10 @@ const config: PlaywrightTestConfig = {
       use: {
         ...devices['Desktop Chromium'],
         viewport: { width: 1920, height: 1080 },
+        storageState: undefined,
+        launchOptions: {
+          args: ['--incognito', '--disable-cache', '--disable-application-cache']
+        },
       },
       
     },
