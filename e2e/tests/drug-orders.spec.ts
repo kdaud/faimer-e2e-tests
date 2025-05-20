@@ -1,4 +1,5 @@
-import { test, expect } from '@playwright/test';
+import { expect } from '@playwright/test';
+import { test } from '../utils/configs/globalSetup';
 import { delay, HomePage} from '../utils/pages/home-page';
 import { Keycloak } from '../utils/pages/keycloak';
 import { VisitsPage } from '../utils/pages/visits-page';
@@ -11,9 +12,7 @@ let visitsPage: VisitsPage;
 let chartPage: ChartPage;
 let ordersPage: OrdersPage;
 
-test.beforeEach(async ({ page, context }) => {
-  await context.clearCookies();
-  await context.clearPermissions();
+test.beforeEach(async ({ page }) => {
   homePage = new HomePage(page);
   keycloak = new Keycloak(page);
   visitsPage = new VisitsPage(page);

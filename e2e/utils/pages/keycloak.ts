@@ -4,18 +4,21 @@ import { delay } from './home-page';
 export var user = {
   userName : '',
   firstName : '',
+  lastName : '',
   email : '',
 }
 
 export var userTwo = {
   userName : '',
   firstName : '',
+  lastName : '',
   email : '',
 }
 
 export var userThree = {
   userName : '',
   firstName : '',
+  lastName : '',
   email : '',
 }
 export class Keycloak {
@@ -44,12 +47,14 @@ export class Keycloak {
     user = {
       userName : `${Array.from({ length: 5 }, () => String.fromCharCode(Math.floor(Math.random() * 26) + 97)).join('')}`,
       firstName: `${Array.from({ length: 6 }, () => String.fromCharCode(Math.floor(Math.random() * 26) + 97)).join('')}`,
+      lastName: `${Array.from({ length: 6 }, () => String.fromCharCode(Math.floor(Math.random() * 26) + 97)).join('')}`,
       email: `${Array.from({ length: 6 }, () => String.fromCharCode(Math.floor(Math.random() * 26) + 97)).join('')}@gmail.com`
     }
     await this.page.locator('input[name="username"]').fill(`${user.userName}`);
     await this.page.getByTestId('email-input').fill(`${user.email}`);
-    await this.page.locator('label').filter({ hasText: /yesno/i }).locator('span').first().click(), delay(1000);
+    await this.page.locator('label').filter({ hasText: /yes/i }).locator('span').first().click(), delay(1000);
     await this.page.getByTestId('firstName-input').fill(`${user.firstName}`);
+    await this.page.getByTestId('lastName-input').fill(`${user.lastName}`);
     await this.saveUser();
     await this.navigateToCredentials();
     await this.createUserPassword();
@@ -61,12 +66,14 @@ export class Keycloak {
     userTwo = {
       userName : `${Array.from({ length: 5 }, () => String.fromCharCode(Math.floor(Math.random() * 26) + 97)).join('')}`,
       firstName: `${Array.from({ length: 6 }, () => String.fromCharCode(Math.floor(Math.random() * 26) + 97)).join('')}`,
+      lastName: `${Array.from({ length: 6 }, () => String.fromCharCode(Math.floor(Math.random() * 26) + 97)).join('')}`,
       email: `${Array.from({ length: 6 }, () => String.fromCharCode(Math.floor(Math.random() * 26) + 97)).join('')}@gmail.com`
     }
     await this.page.locator('input[name="username"]').fill(`${userTwo.userName}`);
     await this.page.getByTestId('email-input').fill(`${userTwo.email}`);
-    await this.page.locator('label').filter({ hasText: /yesno/i }).locator('span').first().click(), delay(1000);
+    await this.page.locator('label').filter({ hasText: /yes/i }).locator('span').first().click(), delay(1000);
     await this.page.getByTestId('firstName-input').fill(`${userTwo.firstName}`);
+    await this.page.getByTestId('lastName-input').fill(`${userTwo.lastName}`);
     await this.saveUser();
     await this.navigateToCredentials();
     await this.createUserPassword();
@@ -78,12 +85,14 @@ export class Keycloak {
     userThree = {
       userName : `${Array.from({ length: 5 }, () => String.fromCharCode(Math.floor(Math.random() * 26) + 97)).join('')}`,
       firstName: `${Array.from({ length: 6 }, () => String.fromCharCode(Math.floor(Math.random() * 26) + 97)).join('')}`,
+      lastName: `${Array.from({ length: 6 }, () => String.fromCharCode(Math.floor(Math.random() * 26) + 97)).join('')}`,
       email: `${Array.from({ length: 6 }, () => String.fromCharCode(Math.floor(Math.random() * 26) + 97)).join('')}@gmail.com`
     }
     await this.page.locator('input[name="username"]').fill(`${userThree.userName}`);
     await this.page.getByTestId('email-input').fill(`${userThree.email}`);
-    await this.page.locator('label').filter({ hasText: /yesno/i }).locator('span').first().click(), delay(1000);
+    await this.page.locator('label').filter({ hasText: /yes/i }).locator('span').first().click(), delay(1000);
     await this.page.getByTestId('firstName-input').fill(`${userThree.firstName}`);
+    await this.page.getByTestId('lastName-input').fill(`${userThree.lastName}`);
     await this.saveUser();
     await this.navigateToCredentials();
     await this.createUserPassword();

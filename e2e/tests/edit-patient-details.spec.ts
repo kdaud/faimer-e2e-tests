@@ -1,4 +1,5 @@
-import { test, expect } from '@playwright/test';
+import { expect } from '@playwright/test';
+import { test } from '../utils/configs/globalSetup';
 import { delay, HomePage} from '../utils/pages/home-page';
 import { EditPage } from '../utils/pages/edit-page';
 import { Keycloak } from '../utils/pages/keycloak';

@@ -1,4 +1,5 @@
-import { test, expect } from '@playwright/test';
+import { expect } from '@playwright/test';
+import { test } from '../utils/configs/globalSetup';
 import { delay, HomePage } from '../utils/pages/home-page';
 import { Keycloak } from '../utils/pages/keycloak';
 
@@ -8,12 +9,11 @@ let keycloak: Keycloak;
 test.beforeEach(async ({ page }) => {
   homePage = new HomePage(page);
   keycloak = new Keycloak(page);
-
-  await keycloak.open();
 });
 
 test('User creation and data filtering', async ({ page }) => {
   // setup
+  await keycloak.open();
   test.setTimeout(240000);
   await keycloak.navigateToUsers();
   await keycloak.addUserButton().click();

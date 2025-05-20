@@ -141,7 +141,7 @@ export class ClinicalFormsPage {
   async fillWardAdmissionForm() {
     await this.page.getByRole('group', { name: /inpatient patient disposition/i }).locator('span').nth(2).click();
     await this.page.getByRole('combobox', { name: /admitted to location/i}).click();
-    await this.page.getByLabel(/choose an item/i).getByText(/inpatient ward/i).click();
+    await this.page.getByRole('option', { name: /inpatient ward/i }).locator('div').click();
     await this.page.getByRole('combobox', { name: /bed assignment/i }).click();
     await this.page.getByRole('option', { name: /medical surgical/i }).locator('div').click();
     await this.page.locator('#attendingPhysician').fill(attendingPhysician);
