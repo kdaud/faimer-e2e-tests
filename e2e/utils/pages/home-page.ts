@@ -20,7 +20,7 @@ export class HomePage {
   readonly wardsButton = () => this.page.getByRole('link', { name: /wards/i });
 
   async navigateToLoginPage() {
-    await this.page.goto(`${O3_URL}`);
+    await this.page.goto(`${O3_URL}`), delay(5000);
     await expect(this.page.locator('#username')).toBeVisible();
     await expect(this.page.locator('#password')).toBeVisible();
   }
@@ -44,7 +44,7 @@ export class HomePage {
     await this.page.locator('#password').fill(`${process.env.O3_PASSWORD}`);
     await this.page.getByRole('button', { name: /log in/i }).click();
     await this.page.locator('label').filter({ hasText: /inpatient ward/i }).locator('span').first().click();
-    await this.page.getByRole('button', { name: /confirm/i }).click();
+    await this.page.getByRole('button', { name: /confirm/i }).click(), delay(4000);
     await expect(this.page).toHaveURL(/.*home/);
     await expect(this.page.getByText(/today's appointments/i)).not.toBeVisible();
   }
