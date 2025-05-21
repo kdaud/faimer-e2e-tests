@@ -11,6 +11,9 @@ import {
 
 dotenv.config();
 
+export const O3_URL = `${process.env.TEST_ENVIRONMENT}` == 'qa' ? `${process.env.O3_URL_QA}` : `${process.env.O3_URL_DEV}`;
+export const KEYCLOAK_URL = `${process.env.TEST_ENVIRONMENT}` == 'qa' ? `${process.env.KEYCLOAK_URL_QA}` : `${process.env.KEYCLOAK_URL_DEV}`;
+
 async function globalSetup() {
   const requestContext = await request.newContext();
   const token = Buffer.from(`${process.env.O3_USERNAME}:${process.env.O3_PASSWORD}`).toString(

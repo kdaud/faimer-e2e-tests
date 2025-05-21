@@ -84,7 +84,6 @@ export class OrdersPage {
     await this.page.getByRole('button', { name: /sign and close/i }).focus();
     await this.page.getByRole('button', { name: /sign and close/i }).dispatchEvent('click'), delay(1000);
     await expect(this.page.getByText(/error/i)).not.toBeVisible();
-    await expect(this.page.getByText(/discontinued/)).toBeVisible();
   }
 
   async cancelOrder() {

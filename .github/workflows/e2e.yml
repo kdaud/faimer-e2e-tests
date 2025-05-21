@@ -9,6 +9,15 @@ on:
     branches: [main]
 
   workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Choose test environment'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+          - dev
+          - qa
 
 jobs:
   build:
@@ -32,6 +41,7 @@ jobs:
 
       - name: Run E2E tests
         env:
+          TEST_ENVIRONMENT: '${{ github.event.inputs.environment }}'
           KEYCLOAK_USERNAME: '${{ secrets.KEYCLOAK_USERNAME }}'
           KEYCLOAK_PASSWORD: '${{ secrets.KEYCLOAK_PASSWORD }}'
         run: npm run faimer-e2e

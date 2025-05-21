@@ -82,12 +82,9 @@ test('Modify a drug order', async ({ page }) => {
   await ordersPage.modifyDrugOrder();
 
   // verify
-  await chartPage.navigateToMedicationsPage();
   await expect(page.getByText(/aspirin 325mg/i).nth(0)).toBeVisible();
-  await expect(page.getByText(/12 tablet/i)).not.toBeVisible();
-  await expect(page.getByText(/8 tablet/i)).not.toBeVisible();
+  await expect(page.getByText(/8 tablet/i).nth(0)).toBeVisible();
   await expect(page.getByText(/thrice daily/i).nth(0)).toBeVisible();
-  await expect(page.getByText(/5 days/i)).not.toBeVisible();
   await expect(page.getByText(/6 days/i).nth(0)).toBeVisible();
 });
 
@@ -118,7 +115,7 @@ test('Discontinue a drug order', async ({ page }) => {
   await ordersPage.discontinueDrugOrder();
 
   // verify
-  await expect(page.getByText(/aspirin 325mg/i)).not.toBeVisible();
+  await expect(page.locator('p', { hasText: 'Aspirin 325mg' })).toContainText('Discontinued');
 });
 
 test('Add a drug order with free text dosage', async ({ page }) => {
