@@ -1,6 +1,5 @@
 import { devices, PlaywrightTestConfig } from '@playwright/test';
 import * as dotenv from 'dotenv';
-import { O3_URL } from './e2e/utils/configs/globalSetup';
 dotenv.config();
 
 const config: PlaywrightTestConfig = {
@@ -16,7 +15,7 @@ const config: PlaywrightTestConfig = {
   reporter: process.env.CI ? [['junit', { outputFile: 'results.xml' }], ['html']] : [['html']],
   globalSetup: require.resolve('./e2e/utils/configs/globalSetup'),
   use: {
-    baseURL: `${O3_URL}/spa/`,
+    baseURL: `${process.env.O3_URL_DEV}/spa/`,
   },
   projects: [
     {

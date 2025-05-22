@@ -1,6 +1,5 @@
 import { Page, expect } from '@playwright/test';
 import { delay } from './home-page';
-import { KEYCLOAK_URL } from '../configs/globalSetup';
 
 export var user = {
   userName : '',
@@ -28,7 +27,7 @@ export class Keycloak {
   readonly addUserButton = () => this.page.getByTestId('add-user');
 
   async open() {
-    await this.page.goto(`${KEYCLOAK_URL}/realms/master/account`);
+    await this.page.goto(`${process.env.KEYCLOAK_URL_DEV}/realms/master/account`);
     await this.page.getByRole('button', { name: /Sign in/ }).click();
     await this.page.getByLabel(/username or email/i).fill(`${process.env.KEYCLOAK_USERNAME}`);
     await this.page.getByLabel(/password/i).fill(`${process.env.KEYCLOAK_PASSWORD}`);
@@ -37,7 +36,7 @@ export class Keycloak {
   }
   
   async navigateToUsers() {
-    await this.page.goto(`${KEYCLOAK_URL}/admin/master/console`);
+    await this.page.goto(`${process.env.KEYCLOAK_URL_DEV}/admin/master/console`);
     await this.page.getByTestId('realmSelectorToggle').click();
     await expect(this.page.getByRole('menuitem', { name: 'ozone' })).toBeVisible();
     await this.page.getByRole('menuitem', { name: 'ozone' }).click();
@@ -137,7 +136,7 @@ export class Keycloak {
 
   async deleteUser() {
     await this.open();
-    await this.page.goto(`${KEYCLOAK_URL}/admin/master/console/#/ozone/users`);
+    await this.page.goto(`${process.env.KEYCLOAK_URL_DEV}/admin/master/console/#/ozone/users`);
     await this.page.getByRole('textbox', { name: 'search' }).fill(`${user.userName}`);
     await this.page.getByRole('textbox', { name: 'search' }).press('Enter'), delay(1500);
     await this.confirmDelete();
@@ -145,7 +144,7 @@ export class Keycloak {
 
   async deleteUsers() {
     await this.open();
-    await this.page.goto(`${KEYCLOAK_URL}/admin/master/console/#/ozone/users`);
+    await this.page.goto(`${process.env.KEYCLOAK_URL_DEV}/admin/master/console/#/ozone/users`);
     await this.page.getByRole('textbox', { name: 'search' }).fill(`${user.userName}`);
     await this.page.getByRole('textbox', { name: 'search' }).press('Enter'), delay(1500);
     await this.confirmDelete();
