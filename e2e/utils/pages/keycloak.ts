@@ -1,11 +1,13 @@
 import { Page, expect } from '@playwright/test';
 import { delay } from './home-page';
+import { KEYCLOAK_URL } from '../configs/globalSetup';
 
 export var user = {
   userName : '',
   firstName : '',
   lastName : '',
   email : '',
+  password: '',
 }
 
 export var userTwo = {
@@ -13,6 +15,7 @@ export var userTwo = {
   firstName : '',
   lastName : '',
   email : '',
+  password: '',
 }
 
 export var userThree = {
@@ -20,6 +23,7 @@ export var userThree = {
   firstName : '',
   lastName : '',
   email : '',
+  password: '',
 }
 export class Keycloak {
   constructor(readonly page: Page) {}
@@ -27,7 +31,7 @@ export class Keycloak {
   readonly addUserButton = () => this.page.getByTestId('add-user');
 
   async open() {
-    await this.page.goto(`${process.env.KEYCLOAK_URL_DEV}/realms/master/account`);
+    await this.page.goto(`${KEYCLOAK_URL}/realms/master/account`);
     await this.page.getByRole('button', { name: /Sign in/ }).click();
     await this.page.getByLabel(/username or email/i).fill(`${process.env.KEYCLOAK_USERNAME}`);
     await this.page.getByLabel(/password/i).fill(`${process.env.KEYCLOAK_PASSWORD}`);
@@ -36,7 +40,7 @@ export class Keycloak {
   }
   
   async navigateToUsers() {
-    await this.page.goto(`${process.env.KEYCLOAK_URL_DEV}/admin/master/console`);
+    await this.page.goto(`${KEYCLOAK_URL}/admin/master/console`);
     await this.page.getByTestId('realmSelectorToggle').click();
     await expect(this.page.getByRole('menuitem', { name: 'ozone' })).toBeVisible();
     await this.page.getByRole('menuitem', { name: 'ozone' }).click();
@@ -48,7 +52,8 @@ export class Keycloak {
       userName : `${Array.from({ length: 5 }, () => String.fromCharCode(Math.floor(Math.random() * 26) + 97)).join('')}`,
       firstName: `${Array.from({ length: 6 }, () => String.fromCharCode(Math.floor(Math.random() * 26) + 97)).join('')}`,
       lastName: `${Array.from({ length: 6 }, () => String.fromCharCode(Math.floor(Math.random() * 26) + 97)).join('')}`,
-      email: `${Array.from({ length: 6 }, () => String.fromCharCode(Math.floor(Math.random() * 26) + 97)).join('')}@gmail.com`
+      email: `${Array.from({ length: 6 }, () => String.fromCharCode(Math.floor(Math.random() * 26) + 97)).join('')}@gmail.com`,
+      password: `${Array.from({ length: 5 }, () => String.fromCharCode(Math.floor(Math.random() * 26) + 97)).join('')}`
     }
     await this.page.locator('input[name="username"]').fill(`${user.userName}`);
     await this.page.getByTestId('email-input').fill(`${user.email}`);
@@ -57,7 +62,8 @@ export class Keycloak {
     await this.page.getByTestId('lastName-input').fill(`${user.lastName}`);
     await this.saveUser();
     await this.navigateToCredentials();
-    await this.createUserPassword();
+    await this.enterUserPassword();
+    await this.confirmUserPassword();
     await this.navigateToRoles();
     await this.assignRoleToUser();
   }
@@ -67,7 +73,8 @@ export class Keycloak {
       userName : `${Array.from({ length: 5 }, () => String.fromCharCode(Math.floor(Math.random() * 26) + 97)).join('')}`,
       firstName: `${Array.from({ length: 6 }, () => String.fromCharCode(Math.floor(Math.random() * 26) + 97)).join('')}`,
       lastName: `${Array.from({ length: 6 }, () => String.fromCharCode(Math.floor(Math.random() * 26) + 97)).join('')}`,
-      email: `${Array.from({ length: 6 }, () => String.fromCharCode(Math.floor(Math.random() * 26) + 97)).join('')}@gmail.com`
+      email: `${Array.from({ length: 6 }, () => String.fromCharCode(Math.floor(Math.random() * 26) + 97)).join('')}@gmail.com`,
+      password: `${Array.from({ length: 5 }, () => String.fromCharCode(Math.floor(Math.random() * 26) + 97)).join('')}`
     }
     await this.page.locator('input[name="username"]').fill(`${userTwo.userName}`);
     await this.page.getByTestId('email-input').fill(`${userTwo.email}`);
@@ -76,7 +83,8 @@ export class Keycloak {
     await this.page.getByTestId('lastName-input').fill(`${userTwo.lastName}`);
     await this.saveUser();
     await this.navigateToCredentials();
-    await this.createUserPassword();
+    await this.enterPasswordForUserTwo();
+    await this.confirmUserPassword();
     await this.navigateToRoles();
     await this.assignRoleToUser();
   }
@@ -86,7 +94,8 @@ export class Keycloak {
       userName : `${Array.from({ length: 5 }, () => String.fromCharCode(Math.floor(Math.random() * 26) + 97)).join('')}`,
       firstName: `${Array.from({ length: 6 }, () => String.fromCharCode(Math.floor(Math.random() * 26) + 97)).join('')}`,
       lastName: `${Array.from({ length: 6 }, () => String.fromCharCode(Math.floor(Math.random() * 26) + 97)).join('')}`,
-      email: `${Array.from({ length: 6 }, () => String.fromCharCode(Math.floor(Math.random() * 26) + 97)).join('')}@gmail.com`
+      email: `${Array.from({ length: 6 }, () => String.fromCharCode(Math.floor(Math.random() * 26) + 97)).join('')}@gmail.com`,
+      password: `${Array.from({ length: 5 }, () => String.fromCharCode(Math.floor(Math.random() * 26) + 97)).join('')}`
     }
     await this.page.locator('input[name="username"]').fill(`${userThree.userName}`);
     await this.page.getByTestId('email-input').fill(`${userThree.email}`);
@@ -95,7 +104,8 @@ export class Keycloak {
     await this.page.getByTestId('lastName-input').fill(`${userThree.lastName}`);
     await this.saveUser();
     await this.navigateToCredentials();
-    await this.createUserPassword();
+    await this.enterPasswordForUserThree();
+    await this.confirmUserPassword();
     await this.navigateToRoles();
     await this.assignRoleToUser();
   }
@@ -109,10 +119,25 @@ export class Keycloak {
     await this.page.getByTestId('credentials').click();
   }
 
-  async createUserPassword() {
+  async enterUserPassword() {
     await this.page.getByTestId('no-credentials-empty-action').click();
-    await this.page.getByTestId('passwordField').fill('password');
-    await this.page.getByTestId('passwordConfirmationField').fill('password');
+    await this.page.getByTestId('passwordField').fill(`${user.password}`);
+    await this.page.getByTestId('passwordConfirmationField').fill(`${userTwo.password}`);
+  }
+
+  async enterPasswordForUserTwo() {
+    await this.page.getByTestId('no-credentials-empty-action').click();
+    await this.page.getByTestId('passwordField').fill(`${userTwo.password}`);
+    await this.page.getByTestId('passwordConfirmationField').fill(`${userTwo.password}`);
+  }
+
+  async enterPasswordForUserThree() {
+    await this.page.getByTestId('no-credentials-empty-action').click();
+    await this.page.getByTestId('passwordField').fill(`${userThree.password}`);
+    await this.page.getByTestId('passwordConfirmationField').fill(`${userThree.password}`);
+  }
+
+  async confirmUserPassword() {
     await this.page.locator('label').filter({ hasText: /onoff/i }).locator('span').first().click(), delay(1000);
     await this.page.getByTestId('confirm').click(), delay(1500);
     await this.page.getByTestId('confirm').click();
@@ -128,15 +153,15 @@ export class Keycloak {
 
   async assignRoleToUser() {
     await this.page.getByRole('textbox', { name: /search/i }).fill('FAIMER Learner');
-  await this.page.getByRole('textbox', { name: /search/i }).press('Enter');
-  await this.page.getByRole('checkbox', { name: /select row/i }).check();
-  await this.page.getByTestId('assign').click();
-  await expect(this.page.getByText(/user role mapping successfully updated/i)).toBeVisible();
+    await this.page.getByRole('textbox', { name: /search/i }).press('Enter');
+    await this.page.getByRole('checkbox', { name: /select row/i }).check();
+    await this.page.getByTestId('assign').click();
+    await expect(this.page.getByText(/user role mapping successfully updated/i)).toBeVisible();
   }
 
   async deleteUser() {
     await this.open();
-    await this.page.goto(`${process.env.KEYCLOAK_URL_DEV}/admin/master/console/#/ozone/users`);
+    await this.page.goto(`${KEYCLOAK_URL}/admin/master/console/#/ozone/users`);
     await this.page.getByRole('textbox', { name: 'search' }).fill(`${user.userName}`);
     await this.page.getByRole('textbox', { name: 'search' }).press('Enter'), delay(1500);
     await this.confirmDelete();
@@ -144,7 +169,7 @@ export class Keycloak {
 
   async deleteUsers() {
     await this.open();
-    await this.page.goto(`${process.env.KEYCLOAK_URL_DEV}/admin/master/console/#/ozone/users`);
+    await this.page.goto(`${KEYCLOAK_URL}/admin/master/console/#/ozone/users`);
     await this.page.getByRole('textbox', { name: 'search' }).fill(`${user.userName}`);
     await this.page.getByRole('textbox', { name: 'search' }).press('Enter'), delay(1500);
     await this.confirmDelete();
