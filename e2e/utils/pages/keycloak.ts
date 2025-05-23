@@ -122,7 +122,7 @@ export class Keycloak {
   async enterUserPassword() {
     await this.page.getByTestId('no-credentials-empty-action').click();
     await this.page.getByTestId('passwordField').fill(`${user.password}`);
-    await this.page.getByTestId('passwordConfirmationField').fill(`${userTwo.password}`);
+    await this.page.getByTestId('passwordConfirmationField').fill(`${user.password}`);
   }
 
   async enterPasswordForUserTwo() {
