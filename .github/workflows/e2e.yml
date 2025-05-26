@@ -42,6 +42,12 @@ jobs:
       - name: Run E2E tests
         env:
           TEST_ENVIRONMENT: '${{ github.event.inputs.environment }}'
+          O3_URL_DEV: '${{ vars.O3_URL_DEV }}'
+          O3_URL_QA: '${{ vars.O3_URL_QA }}'
+          KEYCLOAK_URL_DEV: '${{ vars.KEYCLOAK_URL_DEV }}'
+          KEYCLOAK_URL_QA: '${{ vars.KEYCLOAK_URL_QA }}'
+          IFRAME_URL_DEV: '${{ vars.IFRAME_URL_DEV }}'
+          IFRAME_URL_QA: '${{ vars.IFRAME_URL_QA }}'
           KEYCLOAK_USERNAME: '${{ secrets.KEYCLOAK_USERNAME }}'
           KEYCLOAK_PASSWORD: '${{ secrets.KEYCLOAK_PASSWORD }}'
         run: npm run faimer-e2e

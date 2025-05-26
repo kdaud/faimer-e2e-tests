@@ -27,21 +27,23 @@ export class HomePage {
 
   async loginWithUser() {
     await this.page.locator('#username').fill(`${user.userName}`);
-    await this.enterLoginCredentials();
+    await this.page.locator('#password').fill(`${user.password}`);
+    await this.confirmCredentials();
   }
 
   async loginWithUserTwo() {
     await this.page.locator('#username').fill(`${userTwo.userName}`);
-    await this.enterLoginCredentials();
+    await this.page.locator('#password').fill(`${userTwo.password}`);
+    await this.confirmCredentials();
   }
 
   async loginWithUserThree() {
     await this.page.locator('#username').fill(`${userThree.userName}`);
-    await this.enterLoginCredentials();
+    await this.page.locator('#password').fill(`${userThree.password}`);
+    await this.confirmCredentials();
   }
 
-  async enterLoginCredentials() {
-    await this.page.locator('#password').fill(`${process.env.O3_PASSWORD}`);
+  async confirmCredentials() {
     await this.page.getByRole('button', { name: /log in/i }).click();
     await this.page.locator('label').filter({ hasText: /inpatient ward/i }).locator('span').first().click();
     await this.page.getByRole('button', { name: /confirm/i }).click(), delay(4000);
