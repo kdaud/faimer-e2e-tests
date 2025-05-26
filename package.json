@@ -11,7 +11,7 @@
     "!playwright-report/"
   ],
   "scripts": {
-    "faimer-e2e": "npx playwright test"
+    "faimer-e2e": "npx playwright test demo sample"
   },
   "keywords": [],
   "author": "",
