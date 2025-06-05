@@ -14,7 +14,6 @@
     "faimer-e2e": "npx playwright test"
   },
   "keywords": [],
-  "author": "",
   "devDependencies": {
     "@playwright/test": "^1.52.0",
     "@types/node": "^20.8.10",

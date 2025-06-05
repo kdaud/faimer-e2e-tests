@@ -14,4 +14,8 @@ export class ChartPage {
   async navigateToMedicationsPage() {
     await this.page.getByRole('link', { name: /medications/i }).click();
   }
+
+  async switchToTabletView() {
+    await this.page.setViewportSize({ width: 750, height: 1060 });
+  }
 }
